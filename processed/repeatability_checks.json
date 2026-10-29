@@ -1,0 +1,12 @@
+{
+  "Same inputs produce identical clean files": true,
+  "All expected row counts match": true,
+  "100 duplicate rows removed": true,
+  "Six demo errors isolated": true,
+  "New invalid payment blocks publication": true,
+  "Prior published database preserved": true,
+  "Measured run seconds": [
+    9.833,
+    9.508
+  ]
+}

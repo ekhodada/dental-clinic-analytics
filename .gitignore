@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+processed/_building/
+processed/*.sqlite
+*-journal
+*-wal
+*-shm
+.DS_Store

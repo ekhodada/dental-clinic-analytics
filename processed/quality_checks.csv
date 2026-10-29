@@ -1,0 +1,35 @@
+﻿Check,Result
+locations: unique IDs,PASS
+patients: unique IDs,PASS
+availability: unique IDs,PASS
+appointments: unique IDs,PASS
+treatments: unique IDs,PASS
+payments: unique IDs,PASS
+expenses: unique IDs,PASS
+recalls: unique IDs,PASS
+Three locations,PASS
+Six dentists and six hygienists,PASS
+Appointments fit available sessions,PASS
+Bookings fall in analysis period,PASS
+Booking and cancellation times make sense,PASS
+Actual treatment times match attendance,PASS
+Provider: no overlapping bookings,PASS
+Chair: no overlapping bookings,PASS
+Patient: no overlapping bookings,PASS
+Availability minutes match work blocks,PASS
+Patients first visit is consistent,PASS
+Treatment charge calculations reconcile,PASS
+Treatments belong to completed visits,PASS
+One invoice per completed visit,PASS
+Invoices are not overpaid,PASS
+Payment dates are valid,PASS
+Expense periods covered by calendar,PASS
+Recall plans match patients and dates,PASS
+Six known care categories,PASS
+Weekly revenue matches treatments,PASS
+Weekly costs match expenses,PASS
+Weekly collections match payments,PASS
+Unpaid invoice amounts reconcile,PASS
+Capacity rates do not exceed 100%,PASS
+Monthly new and returning patients reconcile,PASS
+SQLite file integrity,PASS

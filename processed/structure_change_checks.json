@@ -1,0 +1,16 @@
+{
+  "All branch-week financial rows match source model exactly to the cent": true,
+  "branch_week_rows": 315,
+  "Complete calendar years": [
+    [
+      "2024",
+      12,
+      366
+    ],
+    [
+      "2025",
+      12,
+      365
+    ]
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "year": "2025",
+  "patients": 8618,
+  "care_categories": [
+    [
+      "Routine & Preventive Care",
+      6258,
+      9895,
+      1432906.01
+    ],
+    [
+      "Tooth Repair & Restoration",
+      3399,
+      4066,
+      1396499.85
+    ],
+    [
+      "Gum & Supporting-Tissue Care",
+      1632,
+      1765,
+      426537.49
+    ],
+    [
+      "Alignment, Jaw & Other Oral Care",
+      1313,
+      1401,
+      369846.24
+    ],
+    [
+      "Oral Surgery & Tooth Replacement",
+      1086,
+      1140,
+      311234.59
+    ],
+    [
+      "Root Canal & Pulp Care",
+      205,
+      208,
+      280111.52
+    ]
+  ],
+  "activity": [
+    [
+      "2024",
+      20018,
+      17456,
+      893,
+      1669
+    ],
+    [
+      "2025",
+      19982,
+      17100,
+      989,
+      1893
+    ]
+  ],
+  "branch_activity": [
+    [
+      "Harbour",
+      6686,
+      5832,
+      282,
+      572
+    ],
+    [
+      "Meadow",
+      6719,
+      5674,
+      332,
+      713
+    ],
+    [
+      "Maple",
+      6577,
+      5594,
+      375,
+      608
+    ]
+  ],
+  "treatment_minutes": 712988.0,
+  "available_minutes": 1407840,
+  "overdue_recall_patients": 3076,
+  "financial_years": [
+    {
+      "Year": "2024",
+      "Service Revenue": "4389358.60",
+      "Money Received": "3995411.33",
+      "Operating Costs": "3920854.40",
+      "Operating Profit": "468504.20",
+      "Scenario Loss Expense": "117073.52",
+      "Scenario Operating Profit": "351430.68",
+      "Cash Operating Payments": "3563936.78",
+      "Operating Cash Surplus": "431474.55",
+      "Depreciation": "43200.00",
+      "Gross Receivables": "393947.27",
+      "Scenario Loss Allowance": "117073.52",
+      "Scenario Net Receivables": "276873.75",
+      "Operating Payables Less Prepayments": "313717.62",
+      "Operating Margin": "0.106736",
+      "Scenario Operating Margin": "0.080064"
+    },
+    {
+      "Year": "2025",
+      "Service Revenue": "4217135.70",
+      "Money Received": "3977758.11",
+      "Operating Costs": "3846471.76",
+      "Operating Profit": "370663.94",
+      "Scenario Loss Expense": "253252.43",
+      "Scenario Operating Profit": "117411.51",
+      "Cash Operating Payments": "3812594.96",
+      "Operating Cash Surplus": "165163.15",
+      "Depreciation": "43200.00",
+      "Gross Receivables": "633324.86",
+      "Scenario Loss Allowance": "370325.95",
+      "Scenario Net Receivables": "262998.91",
+      "Operating Payables Less Prepayments": "304394.42",
+      "Operating Margin": "0.087895",
+      "Scenario Operating Margin": "0.027842"
+    }
+  ],
+  "profit_bridge_difference": -0.0
+}

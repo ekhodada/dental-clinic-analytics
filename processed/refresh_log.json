@@ -1,0 +1,101 @@
+{
+  "Synthetic Data": true,
+  "Input Mode": "Complete snapshot replacement",
+  "Tables": {
+    "locations": {
+      "Raw Rows": 3,
+      "Clean Rows": 3,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 0,
+      "Changes": {
+        "Rows with extra spaces fixed": 1
+      }
+    },
+    "patients": {
+      "Raw Rows": 10001,
+      "Clean Rows": 10000,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 1,
+      "Changes": {
+        "Rows with extra spaces fixed": 90,
+        "Date formats fixed": 77
+      }
+    },
+    "availability": {
+      "Raw Rows": 11756,
+      "Clean Rows": 11756,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 0,
+      "Changes": {
+        "Rows with extra spaces fixed": 105
+      }
+    },
+    "appointments": {
+      "Raw Rows": 40083,
+      "Clean Rows": 40000,
+      "Duplicate Rows Removed": 80,
+      "Rejected Rows": 3,
+      "Changes": {
+        "Rows with extra spaces fixed": 356,
+        "Appointment labels fixed": 414
+      }
+    },
+    "treatments": {
+      "Raw Rows": 37321,
+      "Clean Rows": 37321,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 0,
+      "Changes": {
+        "Rows with extra spaces fixed": 331,
+        "Money formats fixed": 1176
+      }
+    },
+    "payments": {
+      "Raw Rows": 56916,
+      "Clean Rows": 56895,
+      "Duplicate Rows Removed": 20,
+      "Rejected Rows": 1,
+      "Changes": {
+        "Rows with extra spaces fixed": 504,
+        "Date formats fixed": 436,
+        "Money formats fixed": 449
+      }
+    },
+    "expenses": {
+      "Raw Rows": 1369,
+      "Clean Rows": 1368,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 1,
+      "Changes": {
+        "Rows with extra spaces fixed": 14,
+        "Date formats fixed": 36,
+        "Money formats fixed": 11
+      }
+    },
+    "recalls": {
+      "Raw Rows": 15384,
+      "Clean Rows": 15384,
+      "Duplicate Rows Removed": 0,
+      "Rejected Rows": 0,
+      "Changes": {
+        "Rows with extra spaces fixed": 137,
+        "Date formats fixed": 118
+      }
+    }
+  },
+  "Checks Passed": 34,
+  "Rejected Demo Records": 6,
+  "Run Seconds": 9.72,
+  "Clean File Hashes": {
+    "appointments.csv": "a81e0a946967bd8b6e32fdf00f0232a887b70097ab75b3947a2ba3d7b37d783a",
+    "availability.csv": "1465487f0742551e2faab87a7357f404b523c88647bee958eb9cca177af7b695",
+    "dates.csv": "c0ccd2183094b1659d96a88182684b7a5a41b70634ca7b7ba4fffe2e9ae09a9b",
+    "expenses.csv": "264c04f4a6ca13422dd349a16f196e477b0d858ddfe29be461d34790562c0741",
+    "locations.csv": "f479230bbcc769d5c9b045649b9fe2c99c82e8047c518db51498c16d5be03f4f",
+    "patients.csv": "e8c469142c385e9b6a65f38f9d85da748b2e14c676f007b31aa02eb42ddb9312",
+    "payments.csv": "4ef96ff62187178b8d083ab0cb806983efee90d22b3f54a523d27c14aaf235af",
+    "recalls.csv": "4a0b3128a8fb9003ef758327644f7b06c2afef40b3ce35f3bfa285e177df1343",
+    "treatments.csv": "00a4b62235eff4090e823d55a64a541efd992496b447bd12c4baa9c1fa846130"
+  },
+  "Timing Scope": "Cleaning, checks, SQL database and base report extracts. Excludes export retrieval, human review, additional scenario calculations, dashboard publication and delivery. Manual baseline not measured."
+}

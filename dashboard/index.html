@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dental Clinic Analytics</title><link rel="stylesheet" href="style.css"></head><body>
+<header><div class="brand"><span class="brand-mark" aria-hidden="true">✚</span><div><strong>DENTAL CLINIC ANALYTICS</strong><span>Dental group · GTA</span></div></div><nav aria-label="Dashboard pages"><button class="tab active" data-page="overview" aria-current="page">Patient Overview</button><button class="tab" data-page="trends">Key Trends</button><button class="tab" data-page="finance">Treatment &amp; Costs</button></nav><button id="reset" class="quiet">Reset filters ↺</button></header>
+<main><div class="heading"><div><div class="eyebrow">THREE LOCATIONS. ONE CLEAR VIEW.</div><h1 id="title">Patient Overview</h1><p id="subtitle">Who visits our clinics, and which services do they use?</p></div></div>
+<div class="filters"><label>Reporting year<select id="year"><option value="all">All years</option><option>2024</option><option selected>2025</option></select></label><label>Month<select id="month"><option value="all">All months</option></select></label><label>Location<select id="location"><option value="all">All three locations</option></select></label><div id="period" aria-live="polite"></div></div>
+<section id="metrics" class="metrics" aria-label="Key measures"></section>
+
+<div id="content" aria-live="polite"></div>
+
+</main>
+
+<script src="data.js"></script><script src="app.js"></script></body></html>

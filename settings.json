@@ -1,0 +1,119 @@
+{
+  "synthetic": true,
+  "clinic_name": "Dental Clinic Analytics (fictional)",
+  "start_date": "2024-01-01",
+  "end_date": "2025-12-31",
+  "currency": "CAD",
+  "timezone": "America/Toronto",
+  "care_categories": [
+    "Routine & Preventive Care",
+    "Tooth Repair & Restoration",
+    "Gum & Supporting-Tissue Care",
+    "Root Canal & Pulp Care",
+    "Oral Surgery & Tooth Replacement",
+    "Alignment, Jaw & Other Oral Care"
+  ],
+  "columns": {
+    "locations": [
+      "Location ID",
+      "Location Name",
+      "City",
+      "Chairs"
+    ],
+    "patients": [
+      "Patient ID",
+      "Birth Year",
+      "Gender",
+      "Home Location ID",
+      "First Visit",
+      "How They Found Us"
+    ],
+    "availability": [
+      "Session ID",
+      "Location ID",
+      "Provider ID",
+      "Provider Type",
+      "Chair ID",
+      "Work Starts",
+      "Work Ends",
+      "Available Minutes"
+    ],
+    "appointments": [
+      "Appointment ID",
+      "Patient ID",
+      "Location ID",
+      "Session ID",
+      "Main Service",
+      "Care Category",
+      "Booked At",
+      "Scheduled Start",
+      "Scheduled End",
+      "Chair Available At",
+      "Status",
+      "Cancelled At",
+      "Treatment Started",
+      "Treatment Finished"
+    ],
+    "treatments": [
+      "Treatment Record ID",
+      "Appointment ID",
+      "Invoice ID",
+      "Treatment",
+      "Care Category",
+      "Gross Charge",
+      "Discount",
+      "Adjustment",
+      "Net Charge"
+    ],
+    "payments": [
+      "Payment ID",
+      "Invoice ID",
+      "Payment Date",
+      "Paid By",
+      "Amount"
+    ],
+    "expenses": [
+      "Expense ID",
+      "Location ID",
+      "Cost Type",
+      "Cost From",
+      "Cost To",
+      "Paid On",
+      "Amount",
+      "Cost Sharing"
+    ],
+    "recalls": [
+      "Recall ID",
+      "Patient ID",
+      "Previous Visit ID",
+      "Return Due",
+      "Grace Days"
+    ]
+  },
+  "expected_rows": {
+    "locations": 3,
+    "patients": 10000,
+    "availability": 11756,
+    "appointments": 40000,
+    "treatments": 37321,
+    "payments": 56895,
+    "expenses": 1368,
+    "recalls": 15384
+  },
+  "demo_rejected_records": {
+    "patients": [
+      ""
+    ],
+    "appointments": [
+      "DEMO_BAD_A0",
+      "DEMO_BAD_A1",
+      "DEMO_BAD_A2"
+    ],
+    "payments": [
+      "DEMO_BAD_P"
+    ],
+    "expenses": [
+      "DEMO_BAD_E"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "default_results_match_independent_calculation": true,
+  "changed_inputs_recalculate": true,
+  "no_positive_payback_handled": true,
+  "blank_input_rejected": true
+}

@@ -1,0 +1,63 @@
+﻿Table,Column,Simple Meaning,Example
+appointments.csv,Appointment ID,"One booking; can be completed, cancelled or missed.",A000001
+appointments.csv,Patient ID,"Anonymous patient code, shared across all branches.",P02502
+appointments.csv,Location ID,"Branch code: L1, L2 or L3.",L1
+appointments.csv,Session ID,Working block used to match a booking to a provider and chair.,H000003
+appointments.csv,Main Service,Main service planned for the booking.,Multi-surface filling
+appointments.csv,Care Category,One of six service reporting groups; not a diagnosis.,Tooth Repair & Restoration
+appointments.csv,Booked At,When the booking was made.,2023-12-09T06:00:00
+appointments.csv,Scheduled Start,When treatment was planned to start.,2024-01-02T09:00:00
+appointments.csv,Scheduled End,When treatment was planned to finish.,2024-01-02T09:50:00
+appointments.csv,Chair Available At,Planned finish plus 10 minutes for cleanup.,2024-01-02T10:00:00
+appointments.csv,Status,"Completed, Cancelled or No-show.",Completed
+appointments.csv,Cancelled At,When the booking was cancelled; otherwise blank.,
+appointments.csv,Treatment Started,Actual start for completed care; otherwise blank.,2024-01-02T09:00:00
+appointments.csv,Treatment Finished,Actual finish for completed care; otherwise blank.,2024-01-02T09:47:00
+availability.csv,Session ID,Working block used to match a booking to a provider and chair.,H000001
+availability.csv,Location ID,"Branch code: L1, L2 or L3.",L1
+availability.csv,Provider ID,Dentist D01-D06 or hygienist H01-H06.,D01
+availability.csv,Provider Type,Dentist or Hygienist.,Dentist
+availability.csv,Chair ID,Branch-specific treatment chair.,L1-CH1
+availability.csv,Work Starts,Start of available clinical working block.,2024-01-02T09:00:00
+availability.csv,Work Ends,End of available clinical working block.,2024-01-02T13:00:00
+availability.csv,Available Minutes,Minutes available in that working block.,240
+dates.csv,Date,Calendar day.,2024-01-01
+dates.csv,Week Starting,Monday of this week.,2024-01-01
+dates.csv,Month,"Calendar month, YYYY-MM.",2024-01
+expenses.csv,Expense ID,One cost record.,X00001
+expenses.csv,Location ID,"Branch code: L1, L2 or L3.",L1
+expenses.csv,Cost Type,"Rent, wages, supplies or another operating expense.",Dentist compensation
+expenses.csv,Cost From,First day covered by the expense.,2024-01-01
+expenses.csv,Cost To,Last day covered by the expense.,2024-01-31
+expenses.csv,Paid On,Assumed expense payment date; may be later than the cutoff; blank for depreciation.,2024-02-10
+expenses.csv,Amount,"CAD dollars: receipt in payments, expense in expenses.",42452.07
+expenses.csv,Cost Sharing,Direct branch expense or explicit allocation of a shared cost.,Direct
+locations.csv,Location ID,"Branch code: L1, L2 or L3.",L1
+locations.csv,Location Name,Fictional branch name.,Harbour
+locations.csv,City,Branch city.,Toronto
+locations.csv,Chairs,Number of treatment chairs.,4
+patients.csv,Patient ID,"Anonymous patient code, shared across all branches.",P00001
+patients.csv,Birth Year,Birth year; age is approximate.,1973
+patients.csv,Gender,"Recorded gender, including not recorded.",Male
+patients.csv,Home Location ID,Usual branch; may differ from where the patient attends.,L1
+patients.csv,First Visit,"First-ever completed visit, including summarized earlier history.",2023-03-20
+patients.csv,How They Found Us,Simulated original referral or acquisition source.,Referral
+payments.csv,Payment ID,One receipt against a bill.,R000001
+payments.csv,Invoice ID,Bill reference; several services and payments can share it.,I000001
+payments.csv,Payment Date,Date money was received.,2024-01-02
+payments.csv,Paid By,Patient or Insurer.,Patient
+payments.csv,Amount,"CAD dollars: receipt in payments, expense in expenses.",124.39
+recalls.csv,Recall ID,One expected follow-up plan.,Q000001
+recalls.csv,Patient ID,"Anonymous patient code, shared across all branches.",P09231
+recalls.csv,Previous Visit ID,Completed hygiene visit that created this plan.,A000002
+recalls.csv,Return Due,Simulated date for the next follow-up.,2024-06-30
+recalls.csv,Grace Days,Extra days before the plan is considered overdue; not a clinical recommendation.,60
+treatments.csv,Treatment Record ID,"One completed billed service line, not a separate visit.",T000001
+treatments.csv,Appointment ID,"One booking; can be completed, cancelled or missed.",A000001
+treatments.csv,Invoice ID,Bill reference; several services and payments can share it.,I000001
+treatments.csv,Treatment,Name of completed billed service.,Multi-surface filling
+treatments.csv,Care Category,One of six service reporting groups; not a diagnosis.,Tooth Repair & Restoration
+treatments.csv,Gross Charge,"Charge before deductions, CAD dollars.",355.39
+treatments.csv,Discount,"Discount deducted, CAD dollars.",0.00
+treatments.csv,Adjustment,"Other charge reduction, CAD dollars; not a refund.",0.00
+treatments.csv,Net Charge,"Gross Charge minus Discount minus Adjustment, CAD dollars.",355.39

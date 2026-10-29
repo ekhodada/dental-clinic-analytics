@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dental analytics — savings estimate</title>
+<style>
+body{font:16px system-ui,sans-serif;color:#282333;background:#faf9fc;margin:0;padding:32px;max-width:1150px;margin:auto}h1{font-size:28px}p{line-height:1.6}.note{border-left:4px solid #7752b3;padding:12px 18px;background:#eee8f6}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{text-align:left;padding:12px;border-bottom:1px solid #ddd7e8}th{background:#eee8f6}input{font:inherit;width:100px;padding:8px;border:1px solid #aaa0b8;border-radius:4px}label{display:inline-flex;align-items:center;gap:12px;margin-right:25px}strong{color:#5c328b}.scroll{overflow:auto}small{color:#625c6c}@media(max-width:650px){body{padding:16px}th,td{padding:9px}input{width:75px}}
+</style>
+<h1>Reporting automation: time and capacity value</h1>
+<p class="note"><strong>Illustrative planning assumptions, not achieved savings.</strong> The measured pipeline takes about 9.6 seconds; human effort before and after has not been measured. Reporting team figures are planning assumptions, not measured performance.</p>
+<p>Measured runs: 9.561, 9.833 and 9.508 seconds. Mean: <strong>9.634 seconds</strong>. Scope: cleaning, validation, database and report extracts only.</p>
+<label>Reports per year <input id="weeks" type="number" min="0" value="52" step="1"></label>
+<div class="scroll"><table><thead><tr><th>Editable assumption</th><th>Reporting team</th><th>Clinic group — all 3 sites</th></tr></thead><tbody>
+<tr><td>Manual human effort per report (minutes)</td><td><input aria-label="Reporting-team manual minutes" id="a_before" type="number" min="0" value="120"></td><td><input aria-label="Clinic manual minutes" id="c_before" type="number" min="0" value="60"></td></tr>
+<tr><td>Human effort after automation (minutes)</td><td><input aria-label="Reporting-team automated human minutes" id="a_after" type="number" min="0" value="20"></td><td><input aria-label="Clinic automated human minutes" id="c_after" type="number" min="0" value="15"></td></tr>
+<tr><td>Loaded labour cost (CAD/hour)</td><td><input aria-label="Reporting-team labour cost" id="a_rate" type="number" min="0" value="35"></td><td><input aria-label="Clinic labour cost" id="c_rate" type="number" min="0" value="45"></td></tr>
+<tr><td>One-time setup/training (hours)</td><td><input aria-label="Reporting-team setup hours" id="a_setup" type="number" min="0" value="40"></td><td><input aria-label="Clinic training hours" id="c_setup" type="number" min="0" value="4"></td></tr>
+<tr><td>Ongoing support (hours/month)</td><td><input aria-label="Reporting-team monthly support hours" id="a_support" type="number" min="0" value="1"></td><td><input aria-label="Clinic monthly support hours" id="c_support" type="number" min="0" value="0"></td></tr>
+<tr><td>Extra software/cloud costs (CAD/year)</td><td><input aria-label="Reporting-team annual extra costs" id="a_cost" type="number" min="0" value="0"></td><td><input aria-label="Clinic annual extra costs" id="c_cost" type="number" min="0" value="0"></td></tr>
+</tbody></table></div>
+<div id="error" role="alert"></div>
+<div class="scroll"><table><thead><tr><th>Estimated result</th><th>Reporting team</th><th>Clinic group</th></tr></thead><tbody id="results"></tbody></table></div>
+<p><small>Reporting-team scope: assembling, cleaning, reconciling and preparing the report. Clinic scope: the manager independently finding, reading and interpreting branch figures. Assume separate staff effort; do not add them if one party's work replaces the other's. After-automation effort still includes review. These estimates cover one combined weekly report for all sites, not three times the same saving.</small></p>
+<p><small>Capacity value means staff time potentially available for other work. It is not automatically cash savings, additional revenue or profit. Zero extra software cost assumes existing licences/infrastructure. Clinic benefits are prospective: dashboards are not built yet. No patient-retention or no-show improvement has been demonstrated.</small></p>
+<script>
+function estimateSavings(x){
+ const saved=(x.before-x.after)/60;
+ const grossHours=saved*x.weeks;
+ const annualHours=grossHours-12*x.support;
+ const firstHours=annualHours-x.setup;
+ const annualValue=annualHours*x.rate-x.cost;
+ const firstValue=firstHours*x.rate-x.cost;
+ const perRunNet=x.weeks>0?annualValue/x.weeks:0;
+ return {savedMinutes:saved*60,reduction:x.before>0?(x.before-x.after)/x.before:null,grossHours,
+ annualHours,annualValue,firstHours,firstValue,payback:perRunNet>0?x.setup*x.rate/perRunNet:null};
+}
+function update(){
+ const weeks=Number(document.getElementById('weeks').value), values={};
+ let valid=document.getElementById('weeks').value!==''&&Number.isFinite(weeks)&&weeks>=0;
+ for(const prefix of ['a','c']){
+  const x={weeks};
+  for(const k of ['before','after','rate','setup','support','cost']){
+   const raw=document.getElementById(prefix+'_'+k).value;
+   x[k]=Number(raw); if(raw===''||!Number.isFinite(x[k])||x[k]<0)valid=false;
+  }
+  values[prefix]=estimateSavings(x);
+ }
+ document.getElementById('error').textContent=valid?'':'Enter a non-negative number in every field.';
+ if(!valid){document.getElementById('results').textContent='';return;}
+ const number=v=>v.toLocaleString('en-CA',{maximumFractionDigits:1});
+ const money=v=>v.toLocaleString('en-CA',{style:'currency',currency:'CAD'});
+ const rows=[['Human minutes saved per report','savedMinutes',number],['Human effort reduction','reduction',v=>v===null?'Not applicable':number(v*100)+'%'],
+ ['Annual hours released before support','grossHours',number],['Annual hours after support','annualHours',number],
+ ['Annual capacity value after support and extra costs','annualValue',money],['First-year hours after setup and support','firstHours',number],
+ ['First-year capacity value after setup, support and extra costs','firstValue',money],['Estimated setup payback (reports)','payback',v=>v===null?'No positive payback':number(v)]];
+ document.getElementById('results').innerHTML=rows.map(([label,key,fmt])=>'<tr><td>'+label+'</td><td>'+fmt(values.a[key])+'</td><td>'+fmt(values.c[key])+'</td></tr>').join('');
+}
+document.querySelectorAll('input').forEach(x=>x.addEventListener('input',update));update();
+</script></html>

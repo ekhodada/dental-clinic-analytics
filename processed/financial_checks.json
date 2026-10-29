@@ -1,0 +1,7 @@
+{
+  "monthly_branch_cash_bridges_reconcile": true,
+  "receivables_roll_forward_reconciles": true,
+  "scenario_allowances_within_gross_balances": true,
+  "main_and_scenario_weekly_monthly_profit_match": true,
+  "branch_months_checked": 72
+}

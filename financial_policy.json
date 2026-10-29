@@ -1,0 +1,38 @@
+{
+  "description": "Illustrative aging-based collection-loss estimate. Not calibrated to a real clinic or a statutory reporting framework. No source invoices or payments are altered.",
+  "age_basis": "Calendar days since completed service; no contractual payment due dates are available. Aging does not prove delinquency.",
+  "recognition": "Main profit = completed-service revenue minus recorded operating costs, before estimated collection losses. A separate what-if scenario deducts the monthly change in an assumed loss allowance. It is not a booked loss or cash payment.",
+  "age_bands": [
+    {
+      "label": "0\u201330 days",
+      "max_days": 30,
+      "loss_rate": 0
+    },
+    {
+      "label": "31\u201360 days",
+      "max_days": 60,
+      "loss_rate": 0.02
+    },
+    {
+      "label": "61\u201390 days",
+      "max_days": 90,
+      "loss_rate": 0.1
+    },
+    {
+      "label": "91\u2013180 days",
+      "max_days": 180,
+      "loss_rate": 0.25
+    },
+    {
+      "label": "181\u2013365 days",
+      "max_days": 365,
+      "loss_rate": 0.75
+    },
+    {
+      "label": "Over 365 days",
+      "max_days": 99999,
+      "loss_rate": 1
+    }
+  ],
+  "scope": "Modeled operating ledger only. Zero opening tracked receivables, payables and allowance on January 1, 2024. No opening bank balance, capital purchases, debt, taxes, owner distributions or pre-2024 ledger. Cash surplus is not total bank cash or owner take-home pay. Depreciation is noncash."
+}

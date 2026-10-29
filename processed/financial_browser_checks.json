@@ -1,0 +1,8 @@
+{
+  "filter_combinations": 7,
+  "main_profit_matches_reports": true,
+  "cash_matches_reports": true,
+  "download": true,
+  "mobile": true,
+  "runtime_errors": []
+}
