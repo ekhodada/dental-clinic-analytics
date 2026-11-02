@@ -2,6 +2,7 @@ from pathlib import Path
 import csv,json,sqlite3,shutil
 B=Path(__file__).resolve().parents[1]
 S=B/"processed"; D=B/"dashboard"
+# I load one cleaned table for reporting.
 def rows(name):
  with (S/'clean'/f'{name}.csv').open(encoding='utf-8-sig',newline='') as f:return list(csv.DictReader(f))
 P=rows('patients'); A=rows('appointments'); T=rows('treatments'); R=rows('payments'); L=rows('locations'); H=rows('availability');Q=rows('recalls');E=rows('expenses')
@@ -36,4 +37,6 @@ data={'locations':[[l['Location Name'],l['City']] for l in L],'locationIds':[l['
 (D/'data.js').write_text('window.CLINIC_DATA='+json.dumps(data,separators=(',',':'))+';')
 from business_questions import build as build_business_answers
 build_business_answers()
+from check_analyses import main as check_analysis_reports
+check_analysis_reports()
 print('Exported clean source data with explicit collection-loss estimates and cash reconciliation.')

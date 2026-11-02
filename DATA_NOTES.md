@@ -1,6 +1,6 @@
 # Data notes
 
-**Synthetic case study. No real patient records or client results.** The reporting window is January 1, 2024–December 31, 2025; CAD and Toronto local time.
+I use the 2024–2025 reporting window, CAD and Toronto local time.
 
 ## Data structure
 
@@ -34,16 +34,9 @@ The cleaner standardizes formats, removes identical duplicates and checks refere
 
 The date table is generated. Monthly costs are spread across calendar days with exact cent allocation. Shared administration is split equally among branches. Depreciation is noncash. Some December expenses are paid in January; cash uses the payment date.
 
-## Important assumptions
+## Definitions
 
-- All branches are leased; staffing, fees and wages are simulated. Dentist compensation is 34% of branch revenue, not a market benchmark.
-- Main profit is before estimated collection losses. The optional scenario is separately documented in [the financial guide](FINANCIAL_MODEL.md).
-- Higher missed-visit probability for longer booking lead times, an extra Maple no-show effect and an extra Meadow cancellation effect were intentionally built into the simulation. Findings illustrate analysis, not proof of real clinic behaviour.
-- The fixed patient pool causes new-patient counts to approach zero late in the period. Do not infer marketing failure or seasonal demand from this.
-- Recall plans start within the observation window, so the early rise in overdue counts partly reflects plans becoming due. Overdue is not churn.
-- Recall intervals and the 60-calendar-day grace period are simulated business rules, not clinical recommendations.
-- Diagnoses, clinical outcomes, contractual invoice due dates, campaigns and intervention results are absent.
-- Source fees are not an Ontario fee guide. No real-world revenue, retention or savings improvement has been demonstrated.
+I keep all assumptions in [DETAILS.md](DETAILS.md#assumptions).
 
 ## Reports
 

@@ -22,4 +22,4 @@ The Mac and Windows refresh runners execute both steps. Inspect the saved checks
 - Financial scenario assumptions: `financial_policy.json`.
 - Reporting calculations: `code/reports.sql` and `code/financial_model.py`.
 
-These records are synthetic. Main operating profit is before estimated collection losses; the optional scenario must remain separate.
+I keep main operating profit before estimated collection losses and the optional scenario separate. I document assumptions in [DETAILS.md](DETAILS.md#assumptions).

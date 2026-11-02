@@ -39,7 +39,7 @@ Two clinicians working eight hours provide 16 clinical hours. A 51% utilization 
 
 The weekday heatmap groups every Monday in a month together, every Tuesday together, and so on. It divides total reserved minutes by total available minutes.
 
-Returning-patient counts are not a retention rate. The fixed synthetic patient pool causes late-period new-patient counts to fall; this is not evidence of real seasonality or marketing failure. Recall counts also reflect plans becoming observable within the data window.
+I distinguish returning-patient counts from the eligible-window return rates in my new cohort reports. I explain the observation rules in [DETAILS.md](DETAILS.md#assumptions).
 
 ## Treatment & Costs
 

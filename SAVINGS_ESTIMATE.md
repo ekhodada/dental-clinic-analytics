@@ -1,6 +1,6 @@
 # Reporting time and savings
 
-Three recorded base-cleaning runs took **9.561, 9.833 and 9.508 seconds**: an average of **9.6 seconds**. These are computer runtimes for cleaning, checks, database creation and base reports.
+Before I added the six new analysis reports, three recorded base-cleaning runs took **9.561, 9.833 and 9.508 seconds**: an average of **9.6 seconds**. These are computer runtimes for cleaning, checks, database creation and base reports.
 
 They exclude export retrieval, human review, the additional financial/scenario step, dashboard publication and delivery. They are not a measure of staff time saved.
 

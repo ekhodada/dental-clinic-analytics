@@ -10,14 +10,18 @@ from decimal import Decimal, ROUND_HALF_UP
 import csv, json, re
 
 BASE = Path(__file__).resolve().parents[1]
+# I convert dollar amounts to integer cents.
 def cents(value):
     return int((Decimal(str(value))*100).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+# I load one cleaned table for reporting.
 def rows(name):
     with (BASE/'processed/clean'/f'{name}.csv').open(encoding='utf-8-sig', newline='') as f:
         return list(csv.DictReader(f))
+# I save report records with a consistent column order.
 def write(name, data):
     with (BASE/'processed/reports'/f'{name}.csv').open('w', newline='') as f:
         w=csv.DictWriter(f, fieldnames=list(data[0])); w.writeheader(); w.writerows(data)
+# I rebuild financial reports and reconcile profit with recorded cash.
 def build():
     config=json.loads((BASE/'settings.json').read_text())
     start=date.fromisoformat(config['start_date']); end=date.fromisoformat(config['end_date'])

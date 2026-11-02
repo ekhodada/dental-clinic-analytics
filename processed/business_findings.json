@@ -119,5 +119,25 @@
       "Scenario Operating Margin": "0.027842"
     }
   ],
-  "profit_bridge_difference": -0.0
+  "profit_bridge_difference": -0.0,
+  "noshow_comparison_2025": {
+    "year": 2025,
+    "comparison": "Maple minus Harbour",
+    "alternative": "two-sided",
+    "groups": {
+      "Harbour": {
+        "no_shows": 282,
+        "eligible_appointments": 6114,
+        "no_show_rate": 0.04612365063788027
+      },
+      "Maple": {
+        "no_shows": 375,
+        "eligible_appointments": 5969,
+        "no_show_rate": 0.06282459373429385
+      }
+    },
+    "z_score": 4.0477352234699495,
+    "p_value": 5.1715600101719275e-05,
+    "rate_difference_percentage_points": 1.6700943096413574
+  }
 }

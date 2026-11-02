@@ -3,6 +3,7 @@ import json,csv,shutil,hashlib,contextlib,io,argparse
 from pathlib import Path
 from clean_and_refresh import BASE,refresh,read,write
 
+# I verify repeatability and preserve published data when a new error appears.
 def main(work):
  output=work/'results'; source=work/'raw'; source.parent.mkdir(parents=True,exist_ok=True)
  shutil.copytree(BASE/'raw',source,dirs_exist_ok=True)

@@ -21,15 +21,19 @@ FK={'patients':{'Home Location ID':('locations','Location ID')},
  'expenses':{'Location ID':('locations','Location ID')},
  'recalls':{'Patient ID':('patients','Patient ID'),'Previous Visit ID':('appointments','Appointment ID')}}
 
+# I read CSV headers and records without changing source files.
 def read(path):
  with path.open(encoding='utf-8-sig',newline='') as f:
   c=csv.DictReader(f); return c.fieldnames,list(c)
+# I save report records with a consistent column order.
 def write(path,rows,columns=None):
  path.parent.mkdir(parents=True,exist_ok=True)
  with path.open('w',encoding='utf-8-sig',newline='') as f:
   w=csv.DictWriter(f,fieldnames=columns or list(rows[0])); w.writeheader(); w.writerows(rows)
+# I convert dollar amounts to integer cents.
 def cents(value): return int(Decimal(str(value))*100)
 
+# I clean and validate a full snapshot before publishing reports.
 def refresh(source,output):
  started=time.perf_counter(); config=json.loads((BASE/'settings.json').read_text())
  output.mkdir(parents=True,exist_ok=True)
@@ -38,6 +42,7 @@ def refresh(source,output):
  if stage.exists(): shutil.rmtree(stage)
  stage.mkdir()
  tables={}; audit={}; rejected=[]
+ # I record why a source row needs review.
  def reject(table,line,reason,row):
   rejected.append({'Table':table,'CSV Row':line,'Problem':reason,'Original Record':json.dumps(row)})
  for table,key in KEYS.items():
@@ -91,6 +96,7 @@ def refresh(source,output):
  write(output/'rejected_rows.csv',rejected,rejectcols)
  if unexpected: raise ValueError('New invalid records found. See rejected_rows.csv; prior published data preserved.')
  checks=[]
+ # I record a named validation result.
  def check(label,ok): checks.append({'Check':label,'Result':'PASS' if ok else 'FAIL'})
  A={a['Appointment ID']:a for a in tables['appointments']}
  H={h['Session ID']:h for h in tables['availability']}
@@ -132,6 +138,7 @@ def refresh(source,output):
  check('Expense periods covered by calendar',all(start.isoformat()<=x['Cost From']<=x['Cost To']<=end.isoformat() for x in tables['expenses']))
  check('Recall plans match patients and dates',all(A[q['Previous Visit ID']]['Patient ID']==q['Patient ID'] and A[q['Previous Visit ID']]['Status']=='Completed' and q['Return Due']>A[q['Previous Visit ID']]['Scheduled Start'][:10] for q in tables['recalls']))
  check('Six known care categories',set(t['Care Category'] for t in T)==set(config['care_categories']))
+ # I stop publication when a required validation fails.
  def gate():
   write(output/'quality_checks.csv',checks)
   if any(x['Result']=='FAIL' for x in checks): raise ValueError('Quality checks failed; previous published data preserved.')
@@ -149,7 +156,9 @@ def refresh(source,output):
   db.executemany(f'INSERT INTO {table} VALUES ({",".join("?" for _ in cols)})',[[x[col] for col in cols] for x in rows])
   write(stage/'clean'/f'{table}.csv',rows)
  db.executescript((BASE/'code'/'reports.sql').read_text()); db.commit()
- for name in ['weekly_finances','patient_trends','care_summary','capacity','unpaid_invoices','recall_trends']:
+ for name in ['weekly_finances','patient_trends','care_summary','capacity','unpaid_invoices','recall_trends',
+              'revenue_bridge','noshow_by_lead_time','receivables_by_age',
+              'revenue_per_chair_hour','channel_value','retention_cohorts']:
   c=db.execute(f'SELECT * FROM {name}'); cols=[x[0] for x in c.description]
   write(stage/'reports'/f'{name}.csv',[dict(zip(cols,row)) for row in c.fetchall()],cols)
  total=lambda query:round(db.execute(query).fetchone()[0]*100)

@@ -1,15 +1,16 @@
 # Dental Clinic Analytics
 
+Built on a simulated dataset modelled on a 3-branch dental group (10,000 patients, 2024-2025).
+
 **Patient activity, appointment performance and weekly finances across three GTA branches.**  
-By [Elnaz Khodadadi](https://github.com/ekhodada)
 
 **[Open the interactive dashboard](https://ekhodada.github.io/dental-clinic-analytics/)** · [Business questions and answers](BUSINESS_QUESTIONS.md) · [Metric guide](DASHBOARD_GUIDE.md)
 
 ## The business problem
 
-A dental group needs one clear view of its patients, appointment capacity and finances. This project turns separate exports into checked data, repeatable reports and three interactive dashboard pages.
+I bring patient activity, appointment capacity and branch finances into one reporting process. I turn separate exports into checked data, repeatable reports and three interactive dashboard pages.
 
-The case study uses **synthetic data**, not real patient records: three GTA locations, 10,000 patient records and 40,000 appointments across **2024 and 2025**. All amounts are Canadian dollars.
+I analyze 40,000 appointments. I report money in Canadian dollars.
 
 ## Three questions, three answers
 
@@ -83,15 +84,19 @@ Or use `refresh_mac.command` / `refresh_weekly.bat`. Then open `index.html`. Loc
 
 | Location | Contents |
 |---|---|
-| `raw/` | Synthetic source exports |
+| `raw/` | Source exports |
 | `processed/clean/` | Clean data and the generated calendar |
 | `processed/reports/` | Weekly, monthly, annual and invoice-aging reports |
 | `code/` | Python cleaning, financial checks and SQL analysis |
 | `dashboard/` | Interactive dashboard and data snapshot |
 | `docs/images/` | Dashboard and process screenshots |
 | [column_guide.csv](column_guide.csv) | Meaning of each data field |
-| [DATA_NOTES.md](DATA_NOTES.md) | Data structure and assumptions |
+| [DATA_NOTES.md](DATA_NOTES.md) | Data structure |
 | [DASHBOARD_GUIDE.md](DASHBOARD_GUIDE.md) | Plain-English definitions |
 | [SAVINGS_ESTIMATE.md](SAVINGS_ESTIMATE.md) | Runtime evidence and how to measure savings |
 
 **Skills demonstrated:** requirements gathering, Python cleaning, SQL analysis, data validation, financial reconciliation, dashboard design and clear recommendations.
+
+## New analysis reports
+
+I refresh six SQL analyses for revenue changes, booking lead time, unpaid invoice age, revenue per chair-hour, channel value and return cohorts. I also calculate a two-sided no-show z-test. [Definitions, verified numbers and queries](DETAILS.md).

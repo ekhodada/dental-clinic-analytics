@@ -18,7 +18,7 @@ A $1,000 treatment, $100 discount and $600 payment produce $900 revenue and $300
 
 The main dashboard does not treat an invented loss estimate as a recorded cost. The optional scenario asks: **What if some unpaid bills cannot be collected?**
 
-The policy assumes losses of 0%, 2%, 10%, 25%, 75% and 100% for invoice ages of 0–30, 31–60, 61–90, 91–180, 181–365 and over 365 days. These are illustrative stress assumptions, not validated benchmarks. Real use requires observed recovery history.
+I keep the optional scenario rates in financial_policy.json and their meaning in [DETAILS.md](DETAILS.md#assumptions).
 
 The allowance is a balance at a date. Its change is the scenario loss expense. We deduct the change once, not the full balance again each year. The scenario changes neither receipts nor legal amounts owed. Age since treatment is not contractual days overdue; payment due dates are unavailable.
 
@@ -61,11 +61,9 @@ CAD. Main figures and the optional scenario are kept separate.
 | Scenario margin | 8.0% | 2.8% |
 <!-- ANNUAL_END -->
 
-## Scope
+## Reporting basis
 
-This is a management case study, not complete statutory financial statements. Taxes, borrowing, capital purchases, owner withdrawals and opening bank cash are absent. Owner take-home pay cannot be calculated.
-
-Tracked opening receivables and payables are zero in January 2024. The 2024 cash surplus therefore does not represent a mature clinic's complete cash history. All sites are leased; dentist compensation is modeled at 34% of branch revenue. Fees, staffing and costs are assumptions.
+I document the financial scope in [DETAILS.md](DETAILS.md#assumptions).
 
 Main report: `weekly_finances`. Optional report: `scenario_weekly_finances`. Run both refresh steps from the README.
 
