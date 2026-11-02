@@ -65,6 +65,9 @@ I pool the two rates to calculate the standard error. I calculate the two-sided 
 
 ## Assumptions
 
+- I keep chosen recovery shares, reminder timing and the test threshold in findings_policy.json. I value recovered root-canal services at the current observed average, group retained visits at the group average, and Maple retained visits at its own branch average; I do not round rates or visit counts before valuation.
+- I treat service-revenue opportunities as amounts before extra costs and collection recovery as cash, not new revenue. I use inclusive age limits for the collections workload and do not add overlapping opportunities; future referral, treatment-plan and payer-error measures require collection of those fields.
+
 - I recognize completed-care revenue after discounts and adjustments. I keep unpaid bills in revenue. Main profit is before estimated collection losses; I keep the existing expected-loss scenario separate.
 - I use billed service categories for the revenue bridge, but assign each full invoice and its treatment time once to the visit's primary appointment category for chair-hours. Shared diagnostic services explain the category differences. “Price effect” also includes changes in procedure mix and discounts.
 - I age invoices at December 31, 2025 using receipts known by that date. My last band starts at 366 days, so day 365 belongs only to the 181–365-day band.
@@ -83,3 +86,26 @@ python3 code/build_dashboard_data.py
 ```
 
 I retain all 34 base checks and the profit-to-cash checks for 72 branch-months. I additionally test age-band edges, future receipt exclusion, single-counted chair time, month-end follow-up, same-day visits, incomplete cohorts, revenue totals and z-test symmetry. These extra checks run in the second pipeline step.
+
+## Opportunity formulas
+
+I value root-canal recovery as lost services × chosen recovery share × current root-canal average charge. I value the group reminder opportunity as (long-lead no-shows − middle-band no-show rate × long-lead eligible bookings) × average completed-visit revenue.
+
+I value collections as the 91–180-day balance × the chosen recovery share. I value the Maple gap as (Maple rate − Harbour rate) × Maple eligible bookings × Maple average completed-visit revenue; it overlaps the group reminder opportunity.
+
+I calculate the prior-year cash timing lift as allocated operating costs − depreciation − actual operating payments, with the existing zero tracked opening-payables basis. I identify unchanged cost categories as an observed cost floor, rather than claiming that most costs are contractually fixed.
+
+## Finding calculations
+
+<!-- FINDINGS_CALCULATIONS_START -->
+| Calculation | Exact estimate |
+|---|---:|
+| Root-canal service-revenue opportunity per year | estimated $48,480.84 CAD |
+| Long-lead service-revenue opportunity per year | estimated $56,631.68 CAD |
+| Collections working balance | estimated $88,530.97 CAD |
+| Cash-recovery opportunity | estimated $16,525.39 CAD |
+| Prior-year cash timing lift | estimated $313,717.62 CAD |
+| Maple service-revenue opportunity per year | estimated $24,808.41 CAD |
+
+I calculate 229.634951 retained visits/year before rounding. I use full-precision rates and unit values, and round only the displayed findings.
+<!-- FINDINGS_CALCULATIONS_END -->

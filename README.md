@@ -4,7 +4,7 @@ Built on a simulated dataset modelled on a 3-branch dental group (10,000 patient
 
 **Patient activity, appointment performance and weekly finances across three GTA branches.**  
 
-**[Open the interactive dashboard](https://ekhodada.github.io/dental-clinic-analytics/)** · [Business questions and answers](BUSINESS_QUESTIONS.md) · [Metric guide](DASHBOARD_GUIDE.md)
+**[Open the interactive dashboard](https://ekhodada.github.io/dental-clinic-analytics/)** · [Findings and actions](FINDINGS.md) · [Metric guide](DASHBOARD_GUIDE.md)
 
 ## The business problem
 
@@ -12,15 +12,11 @@ I bring patient activity, appointment capacity and branch finances into one repo
 
 I analyze 40,000 appointments. I report money in Canadian dollars.
 
-## Three questions, three answers
+## Findings and actions
 
-| Business question | Finding in 2025 | Recommended action |
-|---|---|---|
-| Which services do patients use most? | Routine and preventive care represents 53.6% of completed services. | Protect check-up and hygiene availability; review waiting times before changing capacity. |
-| Where should we investigate appointment performance? | Maple has the highest missed-visit rate; Meadow has the highest cancellation rate. | Review reasons and booking lead times; pilot reminders and a short-notice waitlist. |
-| Why did profit fall? | Revenue fell $172,223; costs fell only $74,383. Profit fell $97,840. | Review weekly branch costs, unfilled slots and older unpaid bills together. |
+I explain the revenue decline, long-lead no-shows, older unpaid bills and the Maple reminder pilot. For each finding, I connect what happened, why, its estimated value, an action and a measure.
 
-[Read the evidence and follow-up measures](BUSINESS_QUESTIONS.md). Recommendations are proposed actions; no revenue, retention or cost improvement is claimed.
+[Read my four findings](FINDINGS.md).
 
 ## The dashboards
 

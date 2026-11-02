@@ -1,7 +1,7 @@
 # Start here
 
 1. Open the [live dashboard](https://ekhodada.github.io/dental-clinic-analytics/) or double-click `index.html`.
-2. Read [the three business answers](BUSINESS_QUESTIONS.md).
+2. Read [the four findings](FINDINGS.md).
 3. Use [the metric guide](DASHBOARD_GUIDE.md) for definitions and [the financial guide](FINANCIAL_MODEL.md) for profit versus cash.
 
 ## Update the data

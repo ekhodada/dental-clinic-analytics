@@ -39,4 +39,6 @@ from business_questions import build as build_business_answers
 build_business_answers()
 from check_analyses import main as check_analysis_reports
 check_analysis_reports()
+from check_findings import main as check_generated_findings
+check_generated_findings()
 print('Exported clean source data with explicit collection-loss estimates and cash reconciliation.')

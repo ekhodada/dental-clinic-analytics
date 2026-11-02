@@ -1,125 +1,61 @@
 {
-  "year": "2025",
-  "patients": 8618,
-  "care_categories": [
-    [
-      "Routine & Preventive Care",
-      6258,
-      9895,
-      1432906.01
-    ],
-    [
-      "Tooth Repair & Restoration",
-      3399,
-      4066,
-      1396499.85
-    ],
-    [
-      "Gum & Supporting-Tissue Care",
-      1632,
-      1765,
-      426537.49
-    ],
-    [
-      "Alignment, Jaw & Other Oral Care",
-      1313,
-      1401,
-      369846.24
-    ],
-    [
-      "Oral Surgery & Tooth Replacement",
-      1086,
-      1140,
-      311234.59
-    ],
-    [
-      "Root Canal & Pulp Care",
-      205,
-      208,
-      280111.52
-    ]
-  ],
-  "activity": [
-    [
-      "2024",
-      20018,
-      17456,
-      893,
-      1669
-    ],
-    [
-      "2025",
-      19982,
-      17100,
-      989,
-      1893
-    ]
-  ],
-  "branch_activity": [
-    [
-      "Harbour",
-      6686,
-      5832,
-      282,
-      572
-    ],
-    [
-      "Meadow",
-      6719,
-      5674,
-      332,
-      713
-    ],
-    [
-      "Maple",
-      6577,
-      5594,
-      375,
-      608
-    ]
-  ],
-  "treatment_minutes": 712988.0,
-  "available_minutes": 1407840,
-  "overdue_recall_patients": 3076,
-  "financial_years": [
-    {
-      "Year": "2024",
-      "Service Revenue": "4389358.60",
-      "Money Received": "3995411.33",
-      "Operating Costs": "3920854.40",
-      "Operating Profit": "468504.20",
-      "Scenario Loss Expense": "117073.52",
-      "Scenario Operating Profit": "351430.68",
-      "Cash Operating Payments": "3563936.78",
-      "Operating Cash Surplus": "431474.55",
-      "Depreciation": "43200.00",
-      "Gross Receivables": "393947.27",
-      "Scenario Loss Allowance": "117073.52",
-      "Scenario Net Receivables": "276873.75",
-      "Operating Payables Less Prepayments": "313717.62",
-      "Operating Margin": "0.106736",
-      "Scenario Operating Margin": "0.080064"
+  "year": 2025,
+  "previous_year": 2024,
+  "cutoff": "2025-12-31",
+  "revenue": {
+    "revenue_drop_cents": 17222290,
+    "revenue_drop_rate": 0.03923646156411099,
+    "profit_drop_rate": 0.2088353957125678,
+    "root_lost_services": 72,
+    "root_service_drop_rate": 0.2571428571428571,
+    "root_revenue_drop_share": 0.55475050065932,
+    "root_average_charge_cents": 134669.0,
+    "root_recovered_services": 36.0,
+    "opportunity_cents": 4848084,
+    "average_charge_effect_cents": -107980,
+    "unchanged_cost_share": 0.46278878698956055,
+    "rent_and_salary_unchanged": true
+  },
+  "lead_time": {
+    "bands": {
+      "0-6 days": {
+        "no_shows": 142,
+        "eligible_appointments": 4746,
+        "rate": 0.029919932574799833
+      },
+      "7-29 days": {
+        "no_shows": 390,
+        "eligible_appointments": 8429,
+        "rate": 0.046268833788112466
+      },
+      "30+ days": {
+        "no_shows": 457,
+        "eligible_appointments": 4914,
+        "rate": 0.092999592999593
+      }
     },
-    {
-      "Year": "2025",
-      "Service Revenue": "4217135.70",
-      "Money Received": "3977758.11",
-      "Operating Costs": "3846471.76",
-      "Operating Profit": "370663.94",
-      "Scenario Loss Expense": "253252.43",
-      "Scenario Operating Profit": "117411.51",
-      "Cash Operating Payments": "3812594.96",
-      "Operating Cash Surplus": "165163.15",
-      "Depreciation": "43200.00",
-      "Gross Receivables": "633324.86",
-      "Scenario Loss Allowance": "370325.95",
-      "Scenario Net Receivables": "262998.91",
-      "Operating Payables Less Prepayments": "304394.42",
-      "Operating Margin": "0.087895",
-      "Scenario Operating Margin": "0.027842"
-    }
-  ],
-  "profit_bridge_difference": -0.0,
+    "branch_count": 3,
+    "pattern_branch_count": 3,
+    "rate_multiple": 3.108282171662453,
+    "retained_visits": 229.63495076521534,
+    "average_visit_cents": 24661.612280701753,
+    "opportunity_cents": 5663168
+  },
+  "receivables": {
+    "total_unpaid_cents": 63332486,
+    "over_90_days_cents": 44707748,
+    "collections_balance_cents": 8853097,
+    "recovery_base_cents": 6610156,
+    "opportunity_cents": 1652539,
+    "previous_year_cash_timing_lift_cents": 31371762
+  },
+  "branch_gap": {
+    "retained_visits": 99.68792934249262,
+    "average_maple_visit_cents": 24886.071862710047,
+    "opportunity_cents": 2480841,
+    "higher_in_every_lead_band": true,
+    "overlaps_group_reminder_opportunity": true
+  },
   "noshow_comparison_2025": {
     "year": 2025,
     "comparison": "Maple minus Harbour",
@@ -139,5 +75,56 @@
     "z_score": 4.0477352234699495,
     "p_value": 5.1715600101719275e-05,
     "rate_difference_percentage_points": 1.6700943096413574
-  }
+  },
+  "policy_inputs": {
+    "root_canal_recovery_share": 0.5,
+    "collections_recovery_share": 0.25,
+    "collections_min_age_days": 60,
+    "collections_max_age_days": 180,
+    "reminder_days_before": 7,
+    "confirmation_hours_before": 48,
+    "significance_threshold": 0.001
+  },
+  "findings": [
+    {
+      "title": "Recover lost root-canal visits",
+      "parts": {
+        "What happened": "I find revenue fell estimated ~$172K CAD (3.9%) and operating profit fell 21% from 2024 to 2025.",
+        "Why": "I find broadly steady average charges; 55% of the revenue decline came from 26% fewer root-canal services, averaging estimated $1,347 CAD/service. I find rent and salaried staff costs unchanged, so costs fell more slowly than revenue.",
+        "What it's worth": "I estimate recovering 36 of the 72 lost services (50%) could add estimated ~$48K CAD/year in service revenue, before extra costs.",
+        "What to do": "I would check referrals sent elsewhere, dentist availability and accepted-but-unbooked treatment plans.",
+        "How to measure": "I would track root-canal services per month and the treatment-plan acceptance rate."
+      }
+    },
+    {
+      "title": "Confirm long-lead bookings",
+      "parts": {
+        "What happened": "I find the no-show rate is 9.3% for 30+-day bookings versus 3.0% for bookings under 7 days, about 3.1 times as high.",
+        "Why": "I find the same rising pattern in 3 of 3 branches, so I would test whether reminders and confirmations improve attendance.",
+        "What it's worth": "I estimate matching the 7\u201329-day rate could retain about 230 visits/year and add estimated ~$57K CAD/year in service revenue, before extra costs.",
+        "What to do": "I would pilot a reminder 7 days before care and a reply-to-confirm 48 hours before care at one branch. I would have staff review unconfirmed slots before offering them to a short-notice waitlist.",
+        "How to measure": "I would track the no-show rate for 30+-day bookings and slots refilled against a comparison branch."
+      }
+    },
+    {
+      "title": "Collect older unpaid bills",
+      "parts": {
+        "What happened": "I find estimated ~$447K CAD of estimated ~$633K CAD owed is over 90 days old at 2025-12-31.",
+        "Why": "I would check whether insurer delays, patient balances or billing errors explain the older bills. I note an estimated ~$314K CAD timing lift in 2024 cash because tracked unpaid operating bills start at zero.",
+        "What it's worth": "I estimate recovering 25% of 91\u2013180-day bills could release estimated ~$17K CAD in cash, before collection costs. I would not count this as new service revenue or subtract unpaid bills from profit.",
+        "What to do": "I would run a collections process for 60\u2013180-day bills (estimated ~$89K CAD), classifying each balance as insurer, patient or billing-error work.",
+        "How to measure": "I would track days to collect and the unpaid balance over 90 days."
+      }
+    },
+    {
+      "title": "Prioritize Maple for the reminder pilot",
+      "parts": {
+        "What happened": "I find Maple has a 6.3% no-show rate versus 4.6% at Harbour; the difference is statistically significant (two-sided p < 0.001).",
+        "Why": "I also find Maple above Harbour within every booking lead-time band, so I would investigate its confirmation workflow.",
+        "What it's worth": "I estimate matching Harbour could retain about 100 visits/year and add estimated ~$25K CAD/year in service revenue, before extra costs. I do not add this to the group reminder opportunity because they overlap.",
+        "What to do": "I would prioritize Maple for the reminder and confirmation pilot.",
+        "How to measure": "I would track Maple's no-show rate and its change against Harbour, split by booking lead time."
+      }
+    }
+  ]
 }
