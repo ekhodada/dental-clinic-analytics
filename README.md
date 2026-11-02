@@ -2,97 +2,29 @@
 
 Built on a simulated dataset modelled on a 3-branch dental group (10,000 patients, 2024-2025).
 
-**Patient activity, appointment performance and weekly finances across three GTA branches.**  
+**The problem:** A 3-branch dental group's operating profit fell 21% in 2025. Why, and what should it do?
 
-**[Open the interactive dashboard](https://ekhodada.github.io/dental-clinic-analytics/)** · [Findings and actions](FINDINGS.md) · [Metric guide](DASHBOARD_GUIDE.md)
+| Finding | Evidence | Action | Estimated value |
+|---|---|---|---|
+| Fewer root canals | 26% fewer services; 55% of revenue decline | I check referrals and unbooked plans | estimated ~$48K CAD/year |
+| Long-lead no-shows | 9.3% versus 3.0% | I pilot reminders and confirmations | estimated ~$57K CAD/year |
+| Older unpaid bills | estimated ~$447K CAD aged over 90 days | I triage bills by payer | estimated ~$17K CAD cash; one-off |
 
-## The business problem
+## Dashboard
 
-I bring patient activity, appointment capacity and branch finances into one reporting process. I turn separate exports into checked data, repeatable reports and three interactive dashboard pages.
+Power BI Summary: I will add its screenshot after I build the report.
 
-I analyze 40,000 appointments. I report money in Canadian dollars.
+[90-second walkthrough GIF — web viewer](docs/walkthrough-web.gif)
 
-## Findings and actions
+[Interactive web version for viewing without a Power BI license](https://ekhodada.github.io/dental-clinic-analytics/)
 
-I explain the revenue decline, long-lead no-shows, older unpaid bills and the Maple reminder pilot. For each finding, I connect what happened, why, its estimated value, an action and a measure.
+## How I built it
 
-[Read my four findings and ranked recommendations](FINDINGS.md#ranked-recommendations). I also export the [recommendations table](processed/reports/recommendations.csv).
+- I clean exports and run **34 data-quality checks**.
+- I analyze revenue, bookings and collections through **SQL reporting views**.
+- I reconcile profit to cash **to the cent across 72 branch-months**.
+- I automate the **base refresh in about 10 seconds**.
 
-## The dashboards
+**Tools:** Python, SQL, Power BI
 
-### Patient Overview
-
-Who visits, where they attend and which services they use. Group patient totals count each person once.
-
-![Patient Overview](docs/images/07-patient-overview.png)
-
-### Key Trends
-
-Completed, missed and cancelled appointments; clinical capacity; new and returning patients; overdue follow-ups.
-
-![Key Trends](docs/images/08-key-trends.png)
-
-### Treatment & Costs
-
-Revenue, collections, costs, branch profit and weekly reports. Cash and an optional collection-risk scenario are separate.
-
-![Treatment & Costs](docs/images/09-treatment-costs.png)
-
-Year, month and branch filters work across the pages. Chart points select a month. The financial page downloads the selected weekly report.
-
-## Financial results
-
-| Measure | 2024 | 2025 |
-|---|---:|---:|
-| Service revenue | $4,389,359 | $4,217,136 |
-| Operating costs | $3,920,854 | $3,846,472 |
-| Operating profit | $468,504 | $370,664 |
-| Operating margin | 10.7% | 8.8% |
-| Operating cash surplus | $431,475 | $165,163 |
-
-**Profit and margin above are before estimated collection losses, income tax and financing costs.** They are not owner take-home pay. Revenue includes unpaid charges; collections use payment dates. The optional loss scenario uses stated assumptions and is not mixed into recorded costs. [Financial guide](FINANCIAL_MODEL.md).
-
-## From exports to decisions
-
-1. Import complete source exports with stable IDs.
-2. Clean formats and remove identical duplicates.
-3. Check relationships, visit times, capacity and money totals.
-4. Build clean tables, SQL reports and financial reconciliations.
-5. Refresh the dashboards and business answers.
-6. Recommend an action and define how to measure it.
-
-The test data contains **100 injected duplicates and six known invalid records**. All **34 base checks** pass. Financial checks reconcile profit to cash for **72 branch-months**. Weekly and monthly reports match on both the main and scenario basis.
-
-[Process screenshots](PROCESS.md) · [Quality checks](processed/quality_checks.csv) · [Financial checks](processed/financial_checks.json)
-
-## Run locally
-
-Requires Python 3.10+; no extra Python packages.
-
-```bash
-python3 code/clean_and_refresh.py
-python3 code/build_dashboard_data.py
-```
-
-Or use `refresh_mac.command` / `refresh_weekly.bat`. Then open `index.html`. Local refreshes are published only after committing and pushing the updated files.
-
-## Files and guides
-
-| Location | Contents |
-|---|---|
-| `raw/` | Source exports |
-| `processed/clean/` | Clean data and the generated calendar |
-| `processed/reports/` | Weekly, monthly, annual and invoice-aging reports |
-| `code/` | Python cleaning, financial checks and SQL analysis |
-| `dashboard/` | Interactive dashboard and data snapshot |
-| `docs/images/` | Dashboard and process screenshots |
-| [column_guide.csv](column_guide.csv) | Meaning of each data field |
-| [DATA_NOTES.md](DATA_NOTES.md) | Data structure |
-| [DASHBOARD_GUIDE.md](DASHBOARD_GUIDE.md) | Plain-English definitions |
-| [SAVINGS_ESTIMATE.md](SAVINGS_ESTIMATE.md) | Runtime evidence and how to measure savings |
-
-**Skills demonstrated:** requirements gathering, Python cleaning, SQL analysis, data validation, financial reconciliation, dashboard design and clear recommendations.
-
-## New analysis reports
-
-I refresh six SQL analyses for revenue changes, booking lead time, unpaid invoice age, revenue per chair-hour, channel value and return cohorts. I also calculate a two-sided no-show z-test. [Definitions, verified numbers and queries](DETAILS.md).
+[Method, definitions and refresh instructions](DETAILS.md) · [Findings and ranked actions](FINDINGS.md)

@@ -41,4 +41,8 @@ from check_analyses import main as check_analysis_reports
 check_analysis_reports()
 from check_findings import main as check_generated_findings
 check_generated_findings()
+from project_docs import build as build_project_docs
+build_project_docs()
+from check_docs import main as check_project_docs
+check_project_docs()
 print('Exported clean source data with explicit collection-loss estimates and cash reconciliation.')

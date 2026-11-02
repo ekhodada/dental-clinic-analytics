@@ -326,39 +326,6 @@ def render_findings(findings, recommendations=None, totals=None):
     return "\n".join(lines)
 
 
-# I keep exact opportunity calculations alongside the rounded findings.
-def update_calculation_details(metrics):
-    path = BASE / "DETAILS.md"
-    text = path.read_text()
-    start, end = "<!-- FINDINGS_CALCULATIONS_START -->", "<!-- FINDINGS_CALCULATIONS_END -->"
-    amounts = [
-        ("Root-canal service-revenue opportunity per year", metrics["revenue"]["opportunity_cents"]),
-        ("Long-lead service-revenue opportunity per year", metrics["lead_time"]["opportunity_cents"]),
-        ("Collections working balance", metrics["receivables"]["collections_balance_cents"]),
-        ("Cash-recovery opportunity", metrics["receivables"]["opportunity_cents"]),
-        ("Prior-year cash timing lift", metrics["receivables"]["previous_year_cash_timing_lift_cents"]),
-        ("Maple service-revenue opportunity per year", metrics["branch_gap"]["opportunity_cents"]),
-    ]
-    totals = recommendation_totals(metrics)
-    amounts.extend([
-        ("Maximum shared reminder opportunity", totals["overlap_max_cents"]),
-        ("Combined first-year lower bound", totals["first_year_low_cents"]),
-        ("Combined first-year upper bound", totals["first_year_high_cents"]),
-        ("Annual service-revenue lower bound, excluding backlog recovery", totals["annual_revenue_low_cents"]),
-        ("Annual service-revenue upper bound, excluding backlog recovery", totals["annual_revenue_high_cents"]),
-    ])
-    table = "| Calculation | Exact estimate |\n|---|---:|\n"
-    table += "\n".join(f"| {label} | estimated ${cents / 100:,.2f} CAD |" for label, cents in amounts)
-    table += f'\n\nI calculate {metrics["lead_time"]["retained_visits"]:.6f} retained visits/year before rounding. '
-    table += "I use full-precision rates and unit values, and round only the displayed findings."
-    section = start + "\n" + table + "\n" + end
-    if start in text and end in text:
-        text = text.split(start)[0] + section + text.split(end, 1)[1]
-    else:
-        text += "\n## Finding calculations\n\n" + section + "\n"
-    path.write_text(text)
-
-
 # I rebuild the findings document and its supporting numbers from the database.
 def build():
     policy = json.loads((BASE / "findings_policy.json").read_text())
@@ -382,7 +349,6 @@ def build():
         writer = csv.DictWriter(file, fieldnames=list(recommendations[0]))
         writer.writeheader()
         writer.writerows(recommendations)
-    update_calculation_details(metrics)
     return data
 
 

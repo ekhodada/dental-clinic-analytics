@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "readme_words": 207,
+  "details_words": 775,
+  "combined_words": 982,
+  "seven_required_sections": true,
+  "six_old_guides_removed": true,
+  "local_links_resolve": true,
+  "tools_line_exact": true,
+  "readme_matches_current_metrics": true,
+  "walkthrough_seconds": 90,
+  "power_bi_summary_screenshot": "pending report build"
+}

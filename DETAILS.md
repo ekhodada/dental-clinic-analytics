@@ -1,127 +1,69 @@
-# Analysis details
+# Details
 
-I refresh six analysis views and their CSVs with the existing pipeline. I save the booking comparison in `processed/business_findings.json` and validation results in `processed/analysis_checks.json`.
+## Data and tables
 
-## Reports
+I run reports as SQL views in SQLite, so no database server is needed; the same SQL can run in SQL Server or MySQL with small date-function and syntax changes.
 
-| SQL view / CSV | What I measure |
-|---|---|
-| revenue_bridge | 2024 versus 2025 service counts, revenue, volume effect and average-charge effect by billed care category. |
-| noshow_by_lead_time | 2025 branch no-shows divided by completed plus no-show bookings, by whole-day booking lead time. |
-| receivables_by_age | Invoice balances after receipts through December 31, 2025, grouped by age since care. |
-| revenue_per_chair_hour | 2025 whole-visit revenue divided by actual treatment hours, grouped by primary appointment category. |
-| channel_value | Registered patients, eligible 12-month return rate and revenue per patient by acquisition channel. |
-| retention_cohorts | First-visit quarters with eligible patient counts and 6- and 12-month return rates. |
+I use 40,000 appointments, CAD, Toronto time and a generated calendar.
 
-I use `patient_followup` as an internal helper view. Rates are fractions from 0 to 1 in CSVs: 0.03 means 3%. Money columns end in `_cad`; time columns state hours.
+I use patients (one person), appointments (one booking), treatments (one service), payments (one receipt), expenses (one cost period), availability (one working block), recalls (one plan), generated dates (one day) and locations (one branch).
 
-## Numbers I verified
+I aggregate treatments and receipts separately by invoice before joining, preventing multiplied totals. [Every field](column_guide.csv) has a plain-English definition.
 
-| Measure | Result |
-|---|---:|
-| Root canal services, 2024 → 2025 | 280 → 208 services |
-| Root canal revenue change | −$95,540.74 CAD |
-| Total revenue change | −$172,222.90 CAD |
-| Volume effect | −$171,143.10 CAD |
-| Average-charge effect | −$1,079.80 CAD |
-| Routine average charge, 2024 → 2025 | $144.87 → $144.81 CAD/service |
-| 0–6-day lead time | 142 / 4,746 appointments = 3.0% no-shows |
-| 7–29-day lead time | 390 / 8,429 appointments = 4.6% no-shows |
-| 30+-day lead time | 457 / 4,914 appointments = 9.3% no-shows |
-| Root canal revenue per treatment hour | $807.08 CAD/hour |
-| Routine revenue per treatment hour | $255.01 CAD/hour |
+## Cleaning and checks
 
-I calculate volume effect as (2025 count − 2024 count) × 2024 average charge. I calculate price effect as (2025 average charge − 2024 average charge) × 2025 count. I use full precision before rounding the effects to cents; the rounding-difference column records any residual.
+I standardize dates, labels and money; remove 100 identical duplicates; and isolate six named test errors. Unexpected errors or conflicting IDs block publication and preserve the prior clean outputs.
 
-I find broadly stable average charges, rather than identical prices. Alignment has the largest average-charge move, from $269.50 to $263.99 CAD/service, about −2.05%. The exact query is:
+I retain 34 base checks and cent-level financial checks across 72 branch-months. I also test repeatability, rejected-input protection, age boundaries, follow-up windows, chair-time counting, statistical symmetry, generated findings and recommendation overlap. I save evidence in `processed/*checks*`.
 
-```sql
-SELECT care_category, average_charge_2024_cad, average_charge_2025_cad,
-       volume_effect_cad, price_effect_cad
-FROM revenue_bridge;
-```
+## Metric definitions
 
-## Aging totals and the small target differences
+- I count distinct patients once across selected branches; branch/month totals are not additive. Completed visits mean care delivered, not a cure; services can outnumber visits.
+- I separate new patients, whose first visit falls inside the selection, from returning patients. I estimate age from birth year.
+- I calculate attendance as completed ÷ (completed + no-shows); cancellations are separate. I use no-shows as the numerator for the no-show rate. Late cancellation means under 24 hours.
+- I divide direct-care minutes by available dentist/hygienist minutes for utilization. Booked capacity includes original cancelled reservations and ten-minute turnaround; support staff are excluded.
+- I flag the latest recall after its due date plus 60 calendar days; this is not churn.
+- I use monthly chart points and matching prior-year comparisons. Weeks start Monday; partial weeks are marked.
+- I calculate eligible 6/12-month return rates only when the first visit and full window are observed; same-day visits are not returns and empty denominators stay blank.
+- I split revenue change into volume change × prior average charge and average-charge change × current volume. For chair-hours, I assign each whole visit and invoice once to its primary category.
 
-I get $633,324.86 CAD unpaid in total, $447,077.48 CAD over 90 days, and $380,975.92 CAD over 180 days. I sum cents before rounding. To the nearest dollar, the latter two are $447,077 CAD and $380,976 CAD. Adding rounded bands gives $447,078 CAD for the over-90-day total; truncating the over-180-day total gives $380,975 CAD. I keep the cent-based totals as the source of truth.
+## Financial method
 
-```sql
-SELECT
-  ROUND(SUM(unpaid_balance_cad), 2) AS total_unpaid_cad,
-  ROUND(SUM(CASE WHEN invoice_age_band IN
-    ('91-180 days','181-365 days','366+ days')
-    THEN unpaid_balance_cad ELSE 0 END), 2) AS over_90_days_cad,
-  ROUND(SUM(CASE WHEN invoice_age_band IN
-    ('181-365 days','366+ days')
-    THEN unpaid_balance_cad ELSE 0 END), 2) AS over_180_days_cad
-FROM receivables_by_age;
-```
+I recognize service revenue after discounts and adjustments. Operating profit equals revenue minus recorded operating costs, before estimated collection losses, financing costs and tax; margin equals profit ÷ revenue.
 
-## Booking-rate comparison
+I use receipt/payment dates for operating cash surplus. Unpaid charges already belong to revenue; collecting them later does not create revenue again. I separate unpaid selected visits from all outstanding invoices at the cutoff. Aging uses receipts known at that date, and its last band starts at 366 days.
 
-I compare Maple's 375 / 5,969 eligible appointments (6.3%) with Harbour's 282 / 6,114 eligible appointments (4.6%). I get z = 4.047735 and a two-sided p-value of 0.0000517156. The gap is 1.67 percentage points.
+I allocate monthly costs over calendar days with exact residual cents and split shared administration equally. Depreciation is noncash.
 
-I pool the two rates to calculate the standard error. I calculate the two-sided normal-tail probability with `math.erfc`, so I need no external package. I do not interpret this unadjusted booking comparison as proof of a branch causing no-shows.
+I check: **profit + depreciation − increase in unpaid bills + increase in payables, net of prepayments = operating cash surplus**. The separate loss scenario deducts only the change in its allowance and adds it back in the cash bridge. [Annual totals](processed/reports/annual_financials.csv) and [exact finding calculations](processed/business_findings.json) remain available.
 
 ## Assumptions
 
-- I rank standalone first-year values: annual service-revenue opportunities and one-off backlog cash recovery. I compare them with the profit decline for context, not as predicted profit; I assume root-canal recovery comes from separate accepted bookings and would audit appointment IDs to prevent overlap with refilled no-shows.
-- I bound the reminder overlap using the potential recovered Maple long-lead bookings and the total Maple gap. I subtract the shared value once in each scenario, round the displayed range outward to the nearest ten thousand CAD, and keep the exact bounds and recurring-revenue-only total separately.
+- I use leased sites, six dentists, six hygienists and four chairs per site; dentist compensation is 34% of branch revenue. Tracked opening receivables/payables are zero; taxes, debt, capital purchases, opening bank cash and owner withdrawals are outside scope.
+- I set recovery targets, reminders and losses in policy files. Opportunities exclude extra costs; backlog collections are one-off cash.
+- I bound shared Maple reminder recoveries, subtract their value once and round the displayed range outward. I assume root-canal recovery uses separate accepted bookings and would audit appointment IDs before combining benefits.
+- I retain the fixed patient pool, limited recall history and encoded lead-time/branch patterns. I do not infer marketing failure or clinical outcomes.
+- I use a pooled booking-level z-test without patient clustering or lead-time adjustment; significance does not establish cause. Referral, acceptance and payer-error measures require additional fields.
 
-- I keep chosen recovery shares, reminder timing and the test threshold in findings_policy.json. I value recovered root-canal services at the current observed average, group retained visits at the group average, and Maple retained visits at its own branch average; I do not round rates or visit counts before valuation.
-- I treat service-revenue opportunities as amounts before extra costs and collection recovery as cash, not new revenue. I use inclusive age limits for the collections workload and do not add overlapping opportunities; future referral, treatment-plan and payer-error measures require collection of those fields.
+## How to refresh
 
-- I recognize completed-care revenue after discounts and adjustments. I keep unpaid bills in revenue. Main profit is before estimated collection losses; I keep the existing expected-loss scenario separate.
-- I use billed service categories for the revenue bridge, but assign each full invoice and its treatment time once to the visit's primary appointment category for chair-hours. Shared diagnostic services explain the category differences. “Price effect” also includes changes in procedure mix and discounts.
-- I age invoices at December 31, 2025 using receipts known by that date. My last band starts at 366 days, so day 365 belongs only to the 181–365-day band.
-- I count all registered patients in channel totals, including patients with no observed revenue. Revenue per patient covers the reporting window; I also export first-12-month revenue per eligible patient for a fairer comparison.
-- I include a patient in a return-rate denominator only when the first visit is observed and the full 6- or 12-calendar-month window is available. I clamp month-end anniversaries, count returns on later dates across all branches, exclude pre-window histories, and leave rates blank when nobody is eligible.
-- I use a pooled, two-sided booking-level z-test without continuity correction. Repeated patients and differences in booking lead time are not adjusted. A small p-value does not establish a cause.
-- I keep the existing observation limits: a fixed patient pool affects late new-patient counts, recall history starts inside the window, and selected lead-time and branch patterns are built into the records. Recommendations remain proposals.
-- I retain leased sites, six dentists, six hygienists and dentist compensation at 34% of branch revenue. I keep the existing optional loss rates in financial_policy.json as scenario inputs, not recorded losses.
-- I retain the existing financial scope: zero tracked opening receivables/payables; no opening bank cash, taxes, borrowing, capital purchases or owner withdrawals. Clinical outcome, campaign and actual intervention results are unavailable.
-
-## Refresh and check
+I replace `raw/` with a complete snapshot using stable IDs, then run:
 
 ```bash
 python3 code/clean_and_refresh.py
 python3 code/build_dashboard_data.py
 ```
 
-I retain all 34 base checks and the profit-to-cash checks for 72 branch-months. I additionally test age-band edges, future receipt exclusion, single-counted chair time, month-end follow-up, same-day visits, incomplete cohorts, revenue totals and z-test symmetry. These extra checks run in the second pipeline step.
+I can also use the Mac/Windows refresh runners. I review checks before pushing; GitHub Pages publishes from `main`. External scheduling and automatic delivery are not configured.
 
-## Opportunity formulas
+I time base cleaning/SQL separately; `processed/refresh_log.json` records the run. Extra financial tests, publication and human review are excluded. I measure staff effort before claiming savings, including setup/support.
 
-I value root-canal recovery as lost services × chosen recovery share × current root-canal average charge. I value the group reminder opportunity as (long-lead no-shows − middle-band no-show rate × long-lead eligible bookings) × average completed-visit revenue.
+## File map
 
-I value collections as the 91–180-day balance × the chosen recovery share. I value the Maple gap as (Maple rate − Harbour rate) × Maple eligible bookings × Maple average completed-visit revenue; it overlaps the group reminder opportunity.
-
-I calculate the prior-year cash timing lift as allocated operating costs − depreciation − actual operating payments, with the existing zero tracked opening-payables basis. I identify unchanged cost categories as an observed cost floor, rather than claiming that most costs are contractually fixed.
-
-## Finding calculations
-
-<!-- FINDINGS_CALCULATIONS_START -->
-| Calculation | Exact estimate |
-|---|---:|
-| Root-canal service-revenue opportunity per year | estimated $48,480.84 CAD |
-| Long-lead service-revenue opportunity per year | estimated $56,631.68 CAD |
-| Collections working balance | estimated $88,530.97 CAD |
-| Cash-recovery opportunity | estimated $16,525.39 CAD |
-| Prior-year cash timing lift | estimated $313,717.62 CAD |
-| Maple service-revenue opportunity per year | estimated $24,808.41 CAD |
-| Maximum shared reminder opportunity | estimated $22,354.76 CAD |
-| Combined first-year lower bound | estimated $124,091.56 CAD |
-| Combined first-year upper bound | estimated $146,446.32 CAD |
-| Annual service-revenue lower bound, excluding backlog recovery | estimated $107,566.17 CAD |
-| Annual service-revenue upper bound, excluding backlog recovery | estimated $129,920.93 CAD |
-
-I calculate 229.634951 retained visits/year before rounding. I use full-precision rates and unit values, and round only the displayed findings.
-<!-- FINDINGS_CALCULATIONS_END -->
-
-## Recommendation range
-
-I sum the standalone values from the ranked table using their exact cents. I bound shared visits between max(0, Maple long-lead recovery + Maple gap recovery − Maple no-shows) and min(Maple long-lead recovery, Maple gap recovery). I value each shared visit at the lower of the group and Maple average-visit values, retaining the higher valuation only once.
-
-I subtract the upper shared value for the lower combined bound and the lower shared value for the upper bound. The upper bound is a ceiling under zero shared recoveries, not a claim that the actions are independent. I remove collections from both bounds when reporting recurring annual service revenue.
-
-I save the ranked table in processed/reports/recommendations.csv and the exact calculations in processed/business_findings.json.
+- `raw/`, `processed/clean/`: source and checked exports.
+- `processed/reports/`: analyses, finances and recommendations.
+- `code/`: pipeline and validation.
+- `settings.json`, `*_policy.json`: schema and inputs.
+- `dashboard/`: web viewer.
+- `docs/`: walkthrough, screenshots and [process evidence](docs/evidence.html).
+- [FINDINGS.md](FINDINGS.md): findings and ranked actions.

@@ -7,7 +7,7 @@ from pathlib import Path
 from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
-import csv, json, re
+import csv, json
 
 BASE = Path(__file__).resolve().parents[1]
 # I convert dollar amounts to integer cents.
@@ -127,15 +127,6 @@ def build():
         record['Scenario Operating Margin']=round(Decimal(record['Scenario Operating Profit'])/Decimal(record['Service Revenue']),6)
         annual.append(record)
     write('annual_financials',annual)
-    guide=BASE/'FINANCIAL_MODEL.md'
-    if guide.exists():
-        keys=flow_keys+['Gross Receivables','Scenario Loss Allowance','Scenario Net Receivables']
-        table='| Measure | '+' | '.join(x['Year'] for x in annual)+' |\n|---|'+'---:|'*len(annual)+'\n'
-        table+='\n'.join('| '+k+' | '+' | '.join('$'+format(Decimal(x[k]),',.2f') for x in annual)+' |' for k in keys)
-        table+='\n| Operating margin | '+' | '.join(format(Decimal(x['Operating Margin'])*100,'.1f')+'%' for x in annual)+' |'
-        table+='\n| Scenario margin | '+' | '.join(format(Decimal(x['Scenario Operating Margin'])*100,'.1f')+'%' for x in annual)+' |'
-        text=guide.read_text()
-        guide.write_text(re.sub(r'(?s)<!-- ANNUAL_START -->.*?<!-- ANNUAL_END -->','<!-- ANNUAL_START -->\n'+table+'\n<!-- ANNUAL_END -->',text))
     result={'policy':policy,'provisions':provision,'checks':{'monthly_branch_cash_bridges_reconcile':True,'receivables_roll_forward_reconciles':True,'scenario_allowances_within_gross_balances':True,'main_and_scenario_weekly_monthly_profit_match':True,'branch_months_checked':len(monthly)},'monthly':monthly,'aging':aging}
     (BASE/'processed/financial_checks.json').write_text(json.dumps(result['checks'],indent=2))
     return result
