@@ -1,10 +1,13 @@
 """I verify findings structure, calculations and response to changed inputs."""
 from pathlib import Path
+import csv
+import copy
 import json
 import math
 import re
 import sqlite3
-from business_questions import calculate_metrics, make_findings, render_findings, PARTS
+from business_questions import (calculate_metrics, make_findings, render_findings, PARTS,
+                                recommendation_totals, make_recommendations, money_k)
 
 BASE = Path(__file__).resolve().parents[1]
 
@@ -80,6 +83,53 @@ def check_recalculation(connection, metrics, policy):
     assert 'not statistically significant' in last
 
 
+# I verify ranking, one-number evidence and bounds that count shared bookings only once.
+def check_recommendations(metrics):
+    rows = make_recommendations(metrics)
+    totals = recommendation_totals(metrics)
+    columns = ['Rank', 'Action', 'Evidence', 'Estimated annual value', 'How to measure']
+    assert len(rows) == len(totals['standalone_values_cents'])
+    values = sorted(totals['standalone_values_cents'].values(), reverse=True)
+    for rank, (row, value) in enumerate(zip(rows, values), 1):
+        assert list(row) == columns and row['Rank'] == rank
+        assert len(re.findall(r'\d[\d,]*(?:\.\d+)?', row['Evidence'])) == 1
+        assert row['Estimated annual value'].startswith(money_k(value))
+    gross = sum(totals['standalone_values_cents'].values())
+    assert totals['first_year_low_cents'] == gross - totals['overlap_max_cents']
+    assert totals['first_year_high_cents'] == gross - totals['overlap_min_cents']
+    assert 0 <= totals['overlap_min_cents'] <= totals['overlap_max_cents']
+    assert totals['overlap_max_cents'] <= min(totals['standalone_values_cents']['long_lead'],
+                                               metrics['branch_gap']['opportunity_cents'])
+    assert totals['annual_revenue_low_cents'] + metrics['receivables']['opportunity_cents'] == totals['first_year_low_cents']
+    no_shared = copy.deepcopy(metrics)
+    no_shared['lead_time']['maple_long_lead'] = {'no_shows': 0, 'eligible_appointments': 0}
+    independent = recommendation_totals(no_shared)
+    assert independent['first_year_low_cents'] == independent['first_year_high_cents'] == gross
+    fully_shared = copy.deepcopy(metrics)
+    fully_shared['lead_time']['average_visit_cents'] = metrics['branch_gap']['average_maple_visit_cents']
+    fully_shared['lead_time']['maple_long_lead'] = {
+        'no_shows': metrics['noshow_comparison_2025']['groups']['Maple']['no_shows'],
+        'eligible_appointments': 0}
+    combined = recommendation_totals(fully_shared)
+    assert combined['first_year_low_cents'] == gross - metrics['branch_gap']['opportunity_cents']
+    changed_value = copy.deepcopy(metrics)
+    changed_value['revenue']['opportunity_cents'] = 0
+    assert make_recommendations(changed_value)[-1]['Action'] == 'I would recover unbooked root-canal care'
+    with (BASE / 'processed/reports/recommendations.csv').open(encoding='utf-8-sig', newline='') as file:
+        saved_rows = list(csv.DictReader(file))
+    for row in saved_rows:
+        row['Rank'] = int(row['Rank'])
+    assert saved_rows == rows
+    result = {'status': 'PASS', 'ranked_by_exact_value': True, 'one_number_per_evidence_cell': True,
+              'csv_matches_findings_table': True, 'partial_overlap_bounded': True,
+              'zero_and_full_overlap_examples_pass': True, 'one_off_cash_excluded_from_annual_revenue': True,
+              'first_year_low_cents': totals['first_year_low_cents'],
+              'first_year_high_cents': totals['first_year_high_cents'],
+              'maximum_overlap_cents': totals['overlap_max_cents']}
+    (BASE / 'processed/recommendations_checks.json').write_text(json.dumps(result, indent=2))
+    return rows, totals
+
+
 # I check generated files, ledger evidence and recalculation before publication.
 def main():
     policy = json.loads((BASE / 'findings_policy.json').read_text())
@@ -91,10 +141,13 @@ def main():
         check_structure(findings)
         check_values(connection, metrics, policy)
         check_recalculation(connection, metrics, policy)
-        assert (BASE / 'FINDINGS.md').read_text() == render_findings(findings)
+        recommendations, totals = check_recommendations(metrics)
+        assert (BASE / 'FINDINGS.md').read_text() == render_findings(findings, recommendations, totals)
         saved = json.loads((BASE / 'processed/business_findings.json').read_text())
         assert saved['findings'] == findings
         assert saved['noshow_comparison_2025'] == metrics['noshow_comparison_2025']
+        assert saved['recommendations'] == recommendations
+        assert saved['recommendation_calculations'] == totals
     finally:
         connection.close()
     result = {'status': 'PASS', 'four_findings_with_five_parts': True,

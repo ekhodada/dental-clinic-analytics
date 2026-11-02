@@ -16,7 +16,7 @@ I analyze 40,000 appointments. I report money in Canadian dollars.
 
 I explain the revenue decline, long-lead no-shows, older unpaid bills and the Maple reminder pilot. For each finding, I connect what happened, why, its estimated value, an action and a measure.
 
-[Read my four findings](FINDINGS.md).
+[Read my four findings and ranked recommendations](FINDINGS.md#ranked-recommendations). I also export the [recommendations table](processed/reports/recommendations.csv).
 
 ## The dashboards
 

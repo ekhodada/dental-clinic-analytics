@@ -1,6 +1,8 @@
 """I generate four findings and their calculation evidence from the reporting database."""
 from pathlib import Path
+import csv
 import json
+import math
 import sqlite3
 from analysis_stats import branch_noshow_test
 
@@ -106,12 +108,17 @@ def calculate_metrics(connection, policy):
         WHERE l."Location Name"='Maple' AND substr(a."Scheduled Start",1,4)=?
     ''', (str(year),)).fetchone()[0]
     maple_completed = maple["eligible_appointments"] - maple["no_shows"]
+    maple_long = query_rows(connection, '''
+        SELECT no_shows,eligible_appointments FROM noshow_by_lead_time
+        WHERE branch='Maple' AND lead_time_band='30+ days'
+    ''')[0]
     return {
         "year": year, "previous_year": year - 1, "cutoff": cutoff,
         "revenue": {
             "revenue_drop_cents": revenue_drop,
             "revenue_drop_rate": revenue_drop / previous["revenue_cents"],
             "profit_drop_rate": (profit_before - profit_now) / profit_before,
+            "profit_drop_cents": profit_before - profit_now,
             "root_lost_services": root_lost,
             "root_service_drop_rate": root_lost / root["services_2024"],
             "root_revenue_drop_share": -round(root["revenue_change_cad"] * 100) / revenue_drop,
@@ -127,6 +134,7 @@ def calculate_metrics(connection, policy):
             "rate_multiple": long["rate"] / short["rate"],
             "retained_visits": retained_visits, "average_visit_cents": average_visit_cents,
             "opportunity_cents": round(retained_visits * average_visit_cents),
+            "maple_long_lead": maple_long,
         },
         "receivables": {
             "total_unpaid_cents": sum(row["unpaid_cents"] for row in balances),
@@ -153,6 +161,71 @@ def calculate_metrics(connection, policy):
 # I label each dollar figure as estimated and round headline amounts to thousands.
 def money_k(cents, unit="CAD"):
     return f"estimated ~${cents / 100000:,.0f}K {unit}"
+
+
+# I bound shared Maple recoveries before combining standalone opportunity values.
+def recommendation_totals(metrics):
+    values = {"long_lead": metrics["lead_time"]["opportunity_cents"],
+              "root_canal": metrics["revenue"]["opportunity_cents"],
+              "maple": metrics["branch_gap"]["opportunity_cents"],
+              "collections": metrics["receivables"]["opportunity_cents"]}
+    lead = metrics["lead_time"]
+    maple_long = lead["maple_long_lead"]
+    shared_pool = max(0, maple_long["no_shows"] -
+                      lead["bands"]["7-29 days"]["rate"] * maple_long["eligible_appointments"])
+    maple_recovery = metrics["branch_gap"]["retained_visits"]
+    maple_missed = metrics["noshow_comparison_2025"]["groups"]["Maple"]["no_shows"]
+    overlap_min_visits = max(0, shared_pool + maple_recovery - maple_missed)
+    overlap_max_visits = min(shared_pool, maple_recovery)
+    common_value = min(lead["average_visit_cents"], metrics["branch_gap"]["average_maple_visit_cents"])
+    overlap_min = round(overlap_min_visits * common_value)
+    overlap_max = round(overlap_max_visits * common_value)
+    gross = sum(values.values())
+    low, high = gross - overlap_max, gross - overlap_min
+    return {"standalone_values_cents": values, "shared_maple_long_lead_visits": shared_pool,
+            "overlap_min_visits": overlap_min_visits, "overlap_max_visits": overlap_max_visits,
+            "overlap_min_cents": overlap_min, "overlap_max_cents": overlap_max,
+            "gross_first_year_cents": gross, "first_year_low_cents": low,
+            "first_year_high_cents": high,
+            "annual_revenue_low_cents": low - values["collections"],
+            "annual_revenue_high_cents": high - values["collections"],
+            "display_low_thousands": math.floor(low / 1000000) * 10,
+            "display_high_thousands": math.ceil(high / 1000000) * 10,
+            "profit_drop_cents": metrics["revenue"]["profit_drop_cents"]}
+
+
+# I rank recommendations by unrounded first-year value and show one evidence number.
+def make_recommendations(metrics):
+    values = recommendation_totals(metrics)["standalone_values_cents"]
+    actions = [
+        ("long_lead", "I would confirm long-lead bookings",
+         f'{metrics["lead_time"]["bands"]["30+ days"]["rate"]:.1%} no-show rate',
+         "I track long-lead no-show rate and slots refilled", "CAD/year in service revenue"),
+        ("root_canal", "I would recover unbooked root-canal care",
+         f'{metrics["revenue"]["root_lost_services"]:,} fewer services',
+         "I track monthly services and plan acceptance rate", "CAD/year in service revenue"),
+        ("maple", "I would prioritize Maple for the reminder pilot",
+         f'{metrics["noshow_comparison_2025"]["rate_difference_percentage_points"]:.2f} percentage-point gap',
+         "I compare Maple and Harbour no-show changes", "CAD/year; overlaps the group reminder estimate"),
+        ("collections", "I would follow up older unpaid bills",
+         money_k(metrics["receivables"]["over_90_days_cents"], "CAD in older bills"),
+         "I track days to collect and the balance over 90 days", "CAD cash recovery; one-off"),
+    ]
+    ranked = sorted(actions, key=lambda action: values[action[0]], reverse=True)
+    return [{"Rank": rank, "Action": action, "Evidence": evidence,
+             "Estimated annual value": money_k(values[key], unit), "How to measure": measure}
+            for rank, (key, action, evidence, measure, unit) in enumerate(ranked, 1)]
+
+
+# I explain the overlap-adjusted first-year range without calling cash recovery recurring revenue.
+def recommendation_summary(totals):
+    summary = (f'Combined, these are estimated at roughly ${totals["display_low_thousands"]}-'
+               f'{totals["display_high_thousands"]}K CAD in the first year, compared with an estimated '
+               f'${totals["profit_drop_cents"] / 100000:,.0f}K CAD fall in operating profit.')
+    minimum = "zero" if totals["overlap_min_cents"] == 0 else money_k(totals["overlap_min_cents"])
+    overlap = (f'I allow {minimum} to {money_k(totals["overlap_max_cents"])} of overlap in Maple\'s '
+               'long-lead bookings and subtract it once, rather than adding both reminder estimates in full.')
+    return summary, overlap
 
 
 # I write each finding with the same five short, first-person parts.
@@ -226,7 +299,7 @@ def make_findings(metrics, policy):
             branch_explanation,
             f'I estimate matching Harbour could retain about {gap["retained_visits"]:.0f} visits/year '
             f'and add {money_k(gap["opportunity_cents"], "CAD/year")} in service revenue, before extra costs. '
-            'I do not add this to the group reminder opportunity because they overlap.',
+            'I would count only the non-overlapping part alongside the group reminder opportunity.',
             'I would prioritize Maple for the reminder and confirmation pilot.',
             "I would track Maple's no-show rate and its change against Harbour, split by booking lead time.",
         ]))},
@@ -234,13 +307,22 @@ def make_findings(metrics, policy):
 
 
 # I render exactly five labeled paragraphs for each generated finding.
-def render_findings(findings):
+def render_findings(findings, recommendations=None, totals=None):
     lines = ["# Findings", "", "I connect each finding to an action and a measure. "
              "I show money in CAD and keep calculation details in [DETAILS.md](DETAILS.md).", ""]
     for number, finding in enumerate(findings, 1):
         lines.extend([f'## {number}. {finding["title"]}', ""])
         for label in PARTS:
             lines.extend([f'**{label}:** {finding["parts"][label]}', ""])
+    if recommendations is not None:
+        columns = list(recommendations[0])
+        lines.extend(["## Ranked recommendations", "",
+                      "| " + " | ".join(columns) + " |",
+                      "| " + " | ".join("---" for column in columns) + " |"])
+        lines.extend("| " + " | ".join(str(row[column]) for column in columns) + " |"
+                     for row in recommendations)
+        summary, overlap = recommendation_summary(totals)
+        lines.extend(["", summary, "", overlap, ""])
     return "\n".join(lines)
 
 
@@ -257,6 +339,14 @@ def update_calculation_details(metrics):
         ("Prior-year cash timing lift", metrics["receivables"]["previous_year_cash_timing_lift_cents"]),
         ("Maple service-revenue opportunity per year", metrics["branch_gap"]["opportunity_cents"]),
     ]
+    totals = recommendation_totals(metrics)
+    amounts.extend([
+        ("Maximum shared reminder opportunity", totals["overlap_max_cents"]),
+        ("Combined first-year lower bound", totals["first_year_low_cents"]),
+        ("Combined first-year upper bound", totals["first_year_high_cents"]),
+        ("Annual service-revenue lower bound, excluding backlog recovery", totals["annual_revenue_low_cents"]),
+        ("Annual service-revenue upper bound, excluding backlog recovery", totals["annual_revenue_high_cents"]),
+    ])
     table = "| Calculation | Exact estimate |\n|---|---:|\n"
     table += "\n".join(f"| {label} | estimated ${cents / 100:,.2f} CAD |" for label, cents in amounts)
     table += f'\n\nI calculate {metrics["lead_time"]["retained_visits"]:.6f} retained visits/year before rounding. '
@@ -279,12 +369,19 @@ def build():
     finally:
         connection.close()
     findings = make_findings(metrics, policy)
-    text = render_findings(findings)
-    data = {**metrics, "policy_inputs": policy, "findings": findings}
+    recommendations = make_recommendations(metrics)
+    totals = recommendation_totals(metrics)
+    text = render_findings(findings, recommendations, totals)
+    data = {**metrics, "policy_inputs": policy, "findings": findings,
+            "recommendations": recommendations, "recommendation_calculations": totals}
     (BASE / "FINDINGS.md").write_text(text)
     (BASE / "BUSINESS_QUESTIONS.md").write_text(
         "# Findings\n\nI now keep my four findings, actions and measures in [FINDINGS.md](FINDINGS.md).\n")
     (BASE / "processed/business_findings.json").write_text(json.dumps(data, indent=2))
+    with (BASE / "processed/reports/recommendations.csv").open('w', encoding='utf-8-sig', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=list(recommendations[0]))
+        writer.writeheader()
+        writer.writerows(recommendations)
     update_calculation_details(metrics)
     return data
 

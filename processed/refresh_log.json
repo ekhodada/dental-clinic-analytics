@@ -85,7 +85,7 @@
   },
   "Checks Passed": 34,
   "Rejected Demo Records": 6,
-  "Run Seconds": 11.295,
+  "Run Seconds": 11.292,
   "Clean File Hashes": {
     "appointments.csv": "a81e0a946967bd8b6e32fdf00f0232a887b70097ab75b3947a2ba3d7b37d783a",
     "availability.csv": "1465487f0742551e2faab87a7357f404b523c88647bee958eb9cca177af7b695",

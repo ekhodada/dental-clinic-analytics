@@ -44,8 +44,21 @@ I connect each finding to an action and a measure. I show money in CAD and keep 
 
 **Why:** I also find Maple above Harbour within every booking lead-time band, so I would investigate its confirmation workflow.
 
-**What it's worth:** I estimate matching Harbour could retain about 100 visits/year and add estimated ~$25K CAD/year in service revenue, before extra costs. I do not add this to the group reminder opportunity because they overlap.
+**What it's worth:** I estimate matching Harbour could retain about 100 visits/year and add estimated ~$25K CAD/year in service revenue, before extra costs. I would count only the non-overlapping part alongside the group reminder opportunity.
 
 **What to do:** I would prioritize Maple for the reminder and confirmation pilot.
 
 **How to measure:** I would track Maple's no-show rate and its change against Harbour, split by booking lead time.
+
+## Ranked recommendations
+
+| Rank | Action | Evidence | Estimated annual value | How to measure |
+| --- | --- | --- | --- | --- |
+| 1 | I would confirm long-lead bookings | 9.3% no-show rate | estimated ~$57K CAD/year in service revenue | I track long-lead no-show rate and slots refilled |
+| 2 | I would recover unbooked root-canal care | 72 fewer services | estimated ~$48K CAD/year in service revenue | I track monthly services and plan acceptance rate |
+| 3 | I would prioritize Maple for the reminder pilot | 1.67 percentage-point gap | estimated ~$25K CAD/year; overlaps the group reminder estimate | I compare Maple and Harbour no-show changes |
+| 4 | I would follow up older unpaid bills | estimated ~$447K CAD in older bills | estimated ~$17K CAD cash recovery; one-off | I track days to collect and the balance over 90 days |
+
+Combined, these are estimated at roughly $120-150K CAD in the first year, compared with an estimated $98K CAD fall in operating profit.
+
+I allow zero to estimated ~$22K CAD of overlap in Maple's long-lead bookings and subtract it once, rather than adding both reminder estimates in full.

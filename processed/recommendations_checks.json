@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "ranked_by_exact_value": true,
+  "one_number_per_evidence_cell": true,
+  "csv_matches_findings_table": true,
+  "partial_overlap_bounded": true,
+  "zero_and_full_overlap_examples_pass": true,
+  "one_off_cash_excluded_from_annual_revenue": true,
+  "first_year_low_cents": 12409156,
+  "first_year_high_cents": 14644632,
+  "maximum_overlap_cents": 2235476
+}

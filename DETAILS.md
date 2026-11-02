@@ -65,6 +65,9 @@ I pool the two rates to calculate the standard error. I calculate the two-sided 
 
 ## Assumptions
 
+- I rank standalone first-year values: annual service-revenue opportunities and one-off backlog cash recovery. I compare them with the profit decline for context, not as predicted profit; I assume root-canal recovery comes from separate accepted bookings and would audit appointment IDs to prevent overlap with refilled no-shows.
+- I bound the reminder overlap using the potential recovered Maple long-lead bookings and the total Maple gap. I subtract the shared value once in each scenario, round the displayed range outward to the nearest ten thousand CAD, and keep the exact bounds and recurring-revenue-only total separately.
+
 - I keep chosen recovery shares, reminder timing and the test threshold in findings_policy.json. I value recovered root-canal services at the current observed average, group retained visits at the group average, and Maple retained visits at its own branch average; I do not round rates or visit counts before valuation.
 - I treat service-revenue opportunities as amounts before extra costs and collection recovery as cash, not new revenue. I use inclusive age limits for the collections workload and do not add overlapping opportunities; future referral, treatment-plan and payer-error measures require collection of those fields.
 
@@ -106,6 +109,19 @@ I calculate the prior-year cash timing lift as allocated operating costs − dep
 | Cash-recovery opportunity | estimated $16,525.39 CAD |
 | Prior-year cash timing lift | estimated $313,717.62 CAD |
 | Maple service-revenue opportunity per year | estimated $24,808.41 CAD |
+| Maximum shared reminder opportunity | estimated $22,354.76 CAD |
+| Combined first-year lower bound | estimated $124,091.56 CAD |
+| Combined first-year upper bound | estimated $146,446.32 CAD |
+| Annual service-revenue lower bound, excluding backlog recovery | estimated $107,566.17 CAD |
+| Annual service-revenue upper bound, excluding backlog recovery | estimated $129,920.93 CAD |
 
 I calculate 229.634951 retained visits/year before rounding. I use full-precision rates and unit values, and round only the displayed findings.
 <!-- FINDINGS_CALCULATIONS_END -->
+
+## Recommendation range
+
+I sum the standalone values from the ranked table using their exact cents. I bound shared visits between max(0, Maple long-lead recovery + Maple gap recovery − Maple no-shows) and min(Maple long-lead recovery, Maple gap recovery). I value each shared visit at the lower of the group and Maple average-visit values, retaining the higher valuation only once.
+
+I subtract the upper shared value for the lower combined bound and the lower shared value for the upper bound. The upper bound is a ceiling under zero shared recoveries, not a claim that the actions are independent. I remove collections from both bounds when reporting recurring annual service revenue.
+
+I save the ranked table in processed/reports/recommendations.csv and the exact calculations in processed/business_findings.json.

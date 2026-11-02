@@ -6,6 +6,7 @@
     "revenue_drop_cents": 17222290,
     "revenue_drop_rate": 0.03923646156411099,
     "profit_drop_rate": 0.2088353957125678,
+    "profit_drop_cents": 9784026,
     "root_lost_services": 72,
     "root_service_drop_rate": 0.2571428571428571,
     "root_revenue_drop_share": 0.55475050065932,
@@ -39,7 +40,11 @@
     "rate_multiple": 3.108282171662453,
     "retained_visits": 229.63495076521534,
     "average_visit_cents": 24661.612280701753,
-    "opportunity_cents": 5663168
+    "opportunity_cents": 5663168,
+    "maple_long_lead": {
+      "no_shows": 165,
+      "eligible_appointments": 1607
+    }
   },
   "receivables": {
     "total_unpaid_cents": 63332486,
@@ -121,10 +126,61 @@
       "parts": {
         "What happened": "I find Maple has a 6.3% no-show rate versus 4.6% at Harbour; the difference is statistically significant (two-sided p < 0.001).",
         "Why": "I also find Maple above Harbour within every booking lead-time band, so I would investigate its confirmation workflow.",
-        "What it's worth": "I estimate matching Harbour could retain about 100 visits/year and add estimated ~$25K CAD/year in service revenue, before extra costs. I do not add this to the group reminder opportunity because they overlap.",
+        "What it's worth": "I estimate matching Harbour could retain about 100 visits/year and add estimated ~$25K CAD/year in service revenue, before extra costs. I would count only the non-overlapping part alongside the group reminder opportunity.",
         "What to do": "I would prioritize Maple for the reminder and confirmation pilot.",
         "How to measure": "I would track Maple's no-show rate and its change against Harbour, split by booking lead time."
       }
     }
-  ]
+  ],
+  "recommendations": [
+    {
+      "Rank": 1,
+      "Action": "I would confirm long-lead bookings",
+      "Evidence": "9.3% no-show rate",
+      "Estimated annual value": "estimated ~$57K CAD/year in service revenue",
+      "How to measure": "I track long-lead no-show rate and slots refilled"
+    },
+    {
+      "Rank": 2,
+      "Action": "I would recover unbooked root-canal care",
+      "Evidence": "72 fewer services",
+      "Estimated annual value": "estimated ~$48K CAD/year in service revenue",
+      "How to measure": "I track monthly services and plan acceptance rate"
+    },
+    {
+      "Rank": 3,
+      "Action": "I would prioritize Maple for the reminder pilot",
+      "Evidence": "1.67 percentage-point gap",
+      "Estimated annual value": "estimated ~$25K CAD/year; overlaps the group reminder estimate",
+      "How to measure": "I compare Maple and Harbour no-show changes"
+    },
+    {
+      "Rank": 4,
+      "Action": "I would follow up older unpaid bills",
+      "Evidence": "estimated ~$447K CAD in older bills",
+      "Estimated annual value": "estimated ~$17K CAD cash recovery; one-off",
+      "How to measure": "I track days to collect and the balance over 90 days"
+    }
+  ],
+  "recommendation_calculations": {
+    "standalone_values_cents": {
+      "long_lead": 5663168,
+      "root_canal": 4848084,
+      "maple": 2480841,
+      "collections": 1652539
+    },
+    "shared_maple_long_lead_visits": 90.64598410250326,
+    "overlap_min_visits": 0,
+    "overlap_max_visits": 90.64598410250326,
+    "overlap_min_cents": 0,
+    "overlap_max_cents": 2235476,
+    "gross_first_year_cents": 14644632,
+    "first_year_low_cents": 12409156,
+    "first_year_high_cents": 14644632,
+    "annual_revenue_low_cents": 10756617,
+    "annual_revenue_high_cents": 12992093,
+    "display_low_thousands": 120,
+    "display_high_thousands": 150,
+    "profit_drop_cents": 9784026
+  }
 }
