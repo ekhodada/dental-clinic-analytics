@@ -6,7 +6,7 @@
   "New invalid payment blocks publication": true,
   "Prior published database preserved": true,
   "Measured run seconds": [
-    8.14,
-    8.07
+    7.958,
+    7.913
   ]
 }

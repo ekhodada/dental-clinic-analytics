@@ -48,6 +48,25 @@ There are **3,076 overdue recall patients** at year-end. Review their latest pla
 | Operating margin, same basis | 10.7% | 8.8% |
 | Operating cash surplus | $431,475 | $165,163 |
 
+### Which care contributed most to the revenue decline?
+
+| Care category | 2024 services | 2025 services | Revenue change (CAD) |
+|---|---:|---:|---:|
+| Root Canal & Pulp Care | 280 | 208 | -$95,541 |
+| Tooth Repair & Restoration | 4,246 | 4,066 | -$53,459 |
+| Routine & Preventive Care | 10,041 | 9,895 | -$21,734 |
+| Oral Surgery & Tooth Replacement | 1,150 | 1,140 | -$6,030 |
+| Gum & Supporting-Tissue Care | 1,795 | 1,765 | -$5,792 |
+| Alignment, Jaw & Other Oral Care | 1,334 | 1,401 | +$10,333 |
+
+Root Canal & Pulp Care explains **55.5% of the net revenue decline**. Its service count fell by **72 (25.7%)**, while its average net charge changed by only **+0.4%** (CAD $1,342 to CAD $1,347 per service). The category's decline therefore comes mainly from fewer completed services.
+
+**Next investigation:** Check referrals sent elsewhere, dentist availability and accepted treatment plans that were not booked. These are explanations to investigate; the existing data does not establish why the service count fell.
+
+**Measure next:** Monthly completed services in this category, referral-out counts and accepted plans converted to bookings. The last two measures require additional records.
+
+[Detailed service-count and average-charge calculations](processed/reports/revenue_change_by_care.csv).
+
 **Recommendation:** Review weekly branch revenue and controllable costs together. Investigate unfilled appointment slots and older unpaid bills before adding marketing spend. Profit is positive on the stated basis, but collections still need attention.
 
 **Measure next:** Weekly profit and margin, actual operating cash surplus, and unpaid bills by age. The optional collection-risk scenario is separate from recorded results and is not evidence of actual losses.

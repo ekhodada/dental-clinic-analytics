@@ -83,3 +83,35 @@ SELECT "Month","Location ID",COUNT(*) "Patients With Recall Plan",
  SUM("Return Due"<=cutoff AND date("Return Due",'+'||"Grace Days"||' days')>=cutoff) "Due Within Grace",
  SUM("Return Due">cutoff) "Not Yet Due"
 FROM ranked WHERE rn=1 GROUP BY "Month","Location ID";
+
+-- I separate service-count and average-charge changes to explain the revenue decline.
+CREATE VIEW revenue_change_by_care AS
+WITH periods AS (
+ SELECT CAST(MAX(substr(Date,1,4)) AS INTEGER) current_year FROM dates
+), annual AS (
+ SELECT t."Care Category" care_category,
+  CAST(substr(a."Scheduled Start",1,4) AS INTEGER) service_year,
+  COUNT(*) services,SUM(CAST(ROUND(t."Net Charge"*100) AS INTEGER)) revenue_cents
+ FROM treatments t JOIN appointments a USING("Appointment ID") CROSS JOIN periods p
+ WHERE a.Status='Completed'
+  AND CAST(substr(a."Scheduled Start",1,4) AS INTEGER) IN (p.current_year-1,p.current_year)
+ GROUP BY 1,2
+), comparison AS (
+ SELECT care_category,p.current_year-1 previous_year,p.current_year,
+  SUM(CASE WHEN service_year=p.current_year-1 THEN services ELSE 0 END) previous_services,
+  SUM(CASE WHEN service_year=p.current_year THEN services ELSE 0 END) current_services,
+  SUM(CASE WHEN service_year=p.current_year-1 THEN revenue_cents ELSE 0 END) previous_cents,
+  SUM(CASE WHEN service_year=p.current_year THEN revenue_cents ELSE 0 END) current_cents
+ FROM annual CROSS JOIN periods p GROUP BY care_category
+)
+SELECT care_category "Care Category",previous_year "Previous Year",current_year "Current Year",
+ previous_services "Previous Services",current_services "Current Services",
+ previous_cents/100.0 "Previous Revenue",current_cents/100.0 "Current Revenue",
+ (current_cents-previous_cents)/100.0 "Revenue Change",
+ ROUND(previous_cents/100.0/NULLIF(previous_services,0),4) "Previous Average Charge",
+ ROUND(current_cents/100.0/NULLIF(current_services,0),4) "Current Average Charge",
+ ROUND((current_services-previous_services)*previous_cents/100.0/
+  NULLIF(previous_services,0),2) "Service Count Effect",
+ ROUND((current_cents*1.0/NULLIF(current_services,0)-
+  previous_cents*1.0/NULLIF(previous_services,0))*current_services/100.0,2) "Average Charge Effect"
+FROM comparison ORDER BY "Revenue Change";
