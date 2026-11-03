@@ -1,0 +1,166 @@
+// I total completed service charges after discounts and adjustments, in CAD.
+Revenue =
+DIVIDE ( SUM ( fact_treatments[NetChargeCents] ), 100 )
+
+// I total daily allocated operating costs in CAD, preserving the original expense cents.
+Operating Costs =
+DIVIDE ( SUM ( fact_expenses[CostCents] ), 100 )
+
+// I subtract recorded operating costs from service revenue, before financing costs and tax.
+Operating Profit =
+[Revenue] - [Operating Costs]
+
+// I show the share of service revenue left after recorded operating costs.
+Operating Margin =
+DIVIDE ( [Operating Profit], [Revenue] )
+
+// I total receipts by payment date, including collections for earlier visits.
+Cash Collected =
+DIVIDE ( SUM ( fact_payments[AmountCents] ), 100 )
+
+// I calculate each invoice's unpaid balance at the selected cutoff and group it by invoice age.
+Unpaid Balance by Age =
+VAR Cutoff = MAX ( dim_date[Date] )
+VAR MinimumAge = MIN ( 'Invoice Age'[MinDays] )
+VAR MaximumAge = MAX ( 'Invoice Age'[MaxDays] )
+VAR Invoices =
+    CALCULATETABLE (
+        SUMMARIZE (
+            fact_treatments,
+            fact_treatments[InvoiceID],
+            fact_treatments[ServiceDate]
+        ),
+        REMOVEFILTERS ( dim_date ),
+        REMOVEFILTERS ( dim_care_category )
+    )
+VAR AgedInvoices =
+    FILTER (
+        Invoices,
+        VAR AgeDays = DATEDIFF ( fact_treatments[ServiceDate], Cutoff, DAY )
+        RETURN AgeDays >= MinimumAge && AgeDays <= MaximumAge
+    )
+RETURN
+    SUMX (
+        AgedInvoices,
+        VAR CurrentInvoice = fact_treatments[InvoiceID]
+        VAR Billed =
+            CALCULATE (
+                SUM ( fact_treatments[NetChargeCents] ),
+                REMOVEFILTERS ( dim_date ),
+                REMOVEFILTERS ( dim_care_category )
+            )
+        VAR Paid =
+            CALCULATE (
+                SUM ( fact_payments[AmountCents] ),
+                REMOVEFILTERS ( dim_date ),
+                fact_payments[PaymentDate] <= Cutoff,
+                TREATAS ( { CurrentInvoice }, fact_payments[InvoiceID] )
+            )
+        RETURN DIVIDE ( Billed - COALESCE ( Paid, 0 ), 100 )
+    )
+
+// I show outstanding invoice balances aged at least 91 days, using only receipts known at cutoff.
+Unpaid Over 90 Days =
+CALCULATE (
+    [Unpaid Balance by Age],
+    FILTER ( ALL ( 'Invoice Age' ), 'Invoice Age'[MinDays] >= 91 )
+)
+
+// I divide missed bookings by completed plus missed bookings, excluding cancellations.
+No-show Rate =
+DIVIDE (
+    CALCULATE ( COUNTROWS ( fact_appointments ), fact_appointments[Status] = "No-show" ),
+    CALCULATE (
+        COUNTROWS ( fact_appointments ),
+        fact_appointments[Status] IN { "Completed", "No-show" }
+    )
+)
+
+// I reuse the no-show rate within the chart's booking-lead-time and branch filters.
+No-show Rate by Lead Time =
+[No-show Rate]
+
+// I find revenue for the same calendar period in the prior year.
+Revenue Prior Year =
+CALCULATE ( [Revenue], DATEADD ( dim_date[Date], -1, YEAR ) )
+
+// I compare revenue with matching dates one year earlier, leaving unavailable comparisons blank.
+Revenue vs Prior Year % =
+VAR PreviousRevenue = [Revenue Prior Year]
+RETURN
+    IF (
+        NOT ISBLANK ( PreviousRevenue ) && PreviousRevenue <> 0,
+        DIVIDE ( [Revenue] - PreviousRevenue, PreviousRevenue )
+    )
+
+// I show each care category's contribution to the total revenue change in CAD.
+Revenue Change =
+IF ( NOT ISBLANK ( [Revenue Prior Year] ), [Revenue] - [Revenue Prior Year] )
+
+// I show margin and operating costs as a small label below the profit card.
+Profit Detail =
+"Margin " & FORMAT ( [Operating Margin], "0.0%" )
+    & " | Costs CAD " & FORMAT ( [Operating Costs] / 1000, "#,0" ) & "K"
+
+// I explain the selected period's profit change in one headline.
+Summary Headline =
+VAR PreviousProfit =
+    CALCULATE ( [Operating Profit], DATEADD ( dim_date[Date], -1, YEAR ) )
+VAR Change = DIVIDE ( [Operating Profit] - PreviousProfit, PreviousProfit )
+RETURN
+    IF (
+        ISBLANK ( PreviousProfit ) || PreviousProfit <= 0,
+        "Operating results | no prior-year comparison",
+        "Operating profit " & IF ( Change < 0, "fell ", "rose " )
+            & FORMAT ( ABS ( Change ), "0%" ) & " vs prior year | what changed?"
+    )
+
+// I count bookings where care was delivered, rather than claiming a clinical cure.
+Completed Visits =
+CALCULATE ( COUNTROWS ( fact_appointments ), fact_appointments[Status] = "Completed" )
+
+// I count distinct patients with completed visits, including cross-branch deduplication.
+Patients Seen =
+CALCULATE (
+    DISTINCTCOUNT ( fact_appointments[PatientID] ),
+    fact_appointments[Status] = "Completed"
+)
+
+// I count completed-visit patients whose first-ever visit falls inside the selected date range.
+New Patients =
+VAR FirstDay = MIN ( dim_date[Date] )
+VAR LastDay = MAX ( dim_date[Date] )
+RETURN
+    CALCULATE (
+        [Patients Seen],
+        KEEPFILTERS (
+            FILTER (
+                dim_patient,
+                dim_patient[FirstVisit] >= FirstDay && dim_patient[FirstVisit] <= LastDay
+            )
+        )
+    )
+
+// I separate previously attending patients from new patients in the selected period.
+Returning Patients =
+[Patients Seen] - [New Patients]
+
+// I count billed service lines without confusing them with visits.
+Services Completed =
+COUNTROWS ( fact_treatments )
+
+// I count distinct people receiving the selected billed care category.
+Patients Treated =
+DISTINCTCOUNT ( fact_treatments[PatientID] )
+
+// I count all booked appointment outcomes in the selected period.
+Scheduled Appointments =
+COUNTROWS ( fact_appointments )
+
+// I count missed appointments for the trend chart and tooltips.
+Missed Appointments =
+CALCULATE ( COUNTROWS ( fact_appointments ), fact_appointments[Status] = "No-show" )
+
+// I count cancelled appointments separately from the no-show denominator.
+Cancelled Appointments =
+CALCULATE ( COUNTROWS ( fact_appointments ), fact_appointments[Status] = "Cancelled" )

@@ -43,6 +43,8 @@ Built on a simulated dataset modelled on a 3-branch dental group (10,000 patient
 
 {summary}
 
+[Build the Power BI report](powerbi/README.md)
+
 [{media['duration_seconds']}-second walkthrough GIF — web viewer]({media['path']})
 
 [Interactive web version for viewing without a Power BI license]\

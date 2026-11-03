@@ -12,6 +12,8 @@ from .check_analyses import main as check_analysis_reports
 from .check_findings import main as check_generated_findings
 from .project_docs import build as build_project_docs
 from .check_docs import main as check_project_docs
+from .export_powerbi import build as build_powerbi_exports
+from .check_powerbi import build as check_powerbi_exports
 
 
 def load_viewer_source(financials):
@@ -142,6 +144,8 @@ def build():
         "window.CLINIC_DATA=" + json.dumps(aggregates, separators=(",", ":")) + ";"
     )
     build_business_answers()
+    build_powerbi_exports()
+    check_powerbi_exports()
     check_analysis_reports()
     check_generated_findings()
     build_project_docs()

@@ -16,6 +16,8 @@ Built on a simulated dataset modelled on a 3-branch dental group (10,000 patient
 
 Power BI Summary: I will add its screenshot after I build the report.
 
+[Build the Power BI report](powerbi/README.md)
+
 [90-second walkthrough GIF — web viewer](docs/walkthrough-web.gif)
 
 [Interactive web version for viewing without a Power BI license](https://ekhodada.github.io/dental-clinic-analytics/)
