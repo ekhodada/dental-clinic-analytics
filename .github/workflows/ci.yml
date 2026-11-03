@@ -1,0 +1,35 @@
+name: Pipeline and tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  reporting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install development tools
+        run: python -m pip install -e . -r requirements-dev.txt
+      - name: Check Python formatting
+        run: python -m black --check code tests
+      - name: Record raw data hashes
+        run: sha256sum raw/*.csv > /tmp/raw-before.sha256
+      - name: Refresh reporting
+        run: |
+          python -m dental_analytics.clean_and_refresh
+          python -m dental_analytics.build_dashboard_data
+      - name: Test reporting and publication gates
+        run: python -m pytest
+      - name: Check viewer formatting
+        run: npx --yes prettier@3.5.3 --check dashboard/app.js
+      - name: Compare viewer with original results
+        run: node tests/check_viewer.mjs
+      - name: Execute exploration
+        run: python -m dental_analytics.check_notebook
+      - name: Confirm raw data is unchanged
+        run: sha256sum --check /tmp/raw-before.sha256

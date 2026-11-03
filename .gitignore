@@ -6,3 +6,9 @@ processed/*.sqlite
 *-wal
 *-shm
 .DS_Store
+
+*.egg-info/
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+pytest-of-*/

@@ -8,7 +8,7 @@ I use 40,000 appointments, CAD, Toronto time and a generated calendar.
 
 I use patients (one person), appointments (one booking), treatments (one service), payments (one receipt), expenses (one cost period), availability (one working block), recalls (one plan), generated dates (one day) and locations (one branch).
 
-I aggregate treatments and receipts separately by invoice before joining, preventing multiplied totals. [Every field](column_guide.csv) has a plain-English definition.
+I aggregate services and receipts before joining to prevent multiplied totals. [Field definitions](column_guide.csv).
 
 ## Cleaning and checks
 
@@ -47,23 +47,27 @@ I check: **profit + depreciation − increase in unpaid bills + increase in paya
 
 ## How to refresh
 
-I replace `raw/` with a complete snapshot using stable IDs, then run:
+I use Python 3.12+, replace `raw/` with a complete snapshot using stable IDs, then run:
 
 ```bash
-python3 code/clean_and_refresh.py
-python3 code/build_dashboard_data.py
+python3 -m pip install -e . -r requirements-dev.txt
+python3 -m dental_analytics.clean_and_refresh
+python3 -m dental_analytics.build_dashboard_data
+python3 -m pytest
+python3 -m dental_analytics.check_notebook
 ```
 
-I can also use the Mac/Windows refresh runners. I review checks before pushing; GitHub Pages publishes from `main`. External scheduling and automatic delivery are not configured.
+I review checks before pushing; GitHub Pages publishes from `main`.
 
-I time base cleaning/SQL separately; `processed/refresh_log.json` records the run. Extra financial tests, publication and human review are excluded. I measure staff effort before claiming savings, including setup/support.
+I time base cleaning/SQL separately in `processed/refresh_log.json`, excluding extra tests and review.
 
 ## File map
 
 - `raw/`, `processed/clean/`: source and checked exports.
 - `processed/reports/`: analyses, finances and recommendations.
-- `code/`: pipeline and validation.
+- `code/`: pipeline, installed as `dental_analytics`; `tests/`: 34 quality tests.
+- `notebooks/exploration.ipynb`: my exploratory analysis.
 - `settings.json`, `*_policy.json`: schema and inputs.
-- `dashboard/`: web viewer.
+- `dashboard/`: web viewer with aggregate filter summaries.
 - `docs/`: walkthrough, screenshots and [process evidence](docs/evidence.html).
 - [FINDINGS.md](FINDINGS.md): findings and ranked actions.

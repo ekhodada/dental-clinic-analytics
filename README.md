@@ -2,6 +2,8 @@
 
 Built on a simulated dataset modelled on a 3-branch dental group (10,000 patients, 2024-2025).
 
+[![Pipeline and tests](https://github.com/ekhodada/dental-clinic-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/ekhodada/dental-clinic-analytics/actions/workflows/ci.yml)
+
 **The problem:** A 3-branch dental group's operating profit fell 21% in 2025. Why, and what should it do?
 
 | Finding | Evidence | Action | Estimated value |
