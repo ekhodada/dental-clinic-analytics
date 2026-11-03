@@ -26,4 +26,4 @@ I use year, month and branch filters to investigate changes and download the wee
 
 I clean the data, run **34 quality checks**, and reconcile profit to cash across **72 branch-months**.
 
-[Business questions and answers](BUSINESS_QUESTIONS.md)
+[Business questions and answers](BUSINESS_QUESTIONS.md) · [Setup and refresh instructions](START_HERE.md)
