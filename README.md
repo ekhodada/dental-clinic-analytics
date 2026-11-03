@@ -2,33 +2,28 @@
 
 Built on a simulated dataset modelled on a 3-branch dental group (10,000 patients, 2024-2025).
 
-[![Pipeline and tests](https://github.com/ekhodada/dental-clinic-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/ekhodada/dental-clinic-analytics/actions/workflows/ci.yml)
+**[Open the interactive dashboard](https://ekhodada.github.io/dental-clinic-analytics/)**
 
-**The problem:** A 3-branch dental group's operating profit fell 21% in 2025. Why, and what should it do?
+I bring patient activity, appointment performance and clinic finances into one clear report.
 
-| Finding | Evidence | Action | Estimated value |
-|---|---|---|---|
-| Fewer root canals | 26% fewer services; 55% of revenue decline | I check referrals and unbooked plans | estimated ~$48K CAD/year |
-| Long-lead no-shows | 9.3% versus 3.0% | I pilot reminders and confirmations | estimated ~$57K CAD/year |
-| Older unpaid bills | estimated ~$447K CAD aged over 90 days | I triage bills by payer | estimated ~$17K CAD cash; one-off |
+| Business question | What I found in 2025 | Recommended action |
+|---|---|---|
+| Which services do patients use most? | Routine care accounts for 53.6% of completed services. | Protect check-up and hygiene availability. |
+| Where are appointments being lost? | Maple has the highest no-show rate; Meadow has the highest cancellation rate. | Test reminders and a short-notice waitlist. |
+| Why did profit fall? | Revenue fell CAD $172K; costs fell only CAD $74K. | Review unfilled appointments and branch costs. |
 
-## Dashboard
+## Three dashboard pages
 
-Power BI Summary: I will add its screenshot after I build the report.
+- **Patient Overview:** who attends and which care they receive.
+- **Key Trends:** completed visits, cancellations, no-shows and follow-ups.
+- **Treatment & Costs:** revenue, receipts, costs, profit and weekly reporting.
 
-[Build the Power BI report](powerbi/README.md)
+I use year, month and branch filters to investigate changes and download the weekly report.
 
-[90-second walkthrough GIF — web viewer](docs/walkthrough-web.gif)
+![Patient Overview](docs/images/07-patient-overview.png)
 
-[Interactive web version for viewing without a Power BI license](https://ekhodada.github.io/dental-clinic-analytics/)
+[Key Trends preview](docs/images/08-key-trends.png) · [Treatment & Costs preview](docs/images/09-treatment-costs.png)
 
-## How I built it
+I clean the data, run **34 quality checks**, and reconcile profit to cash across **72 branch-months**.
 
-- I clean exports and run **34 data-quality checks**.
-- I analyze revenue, bookings and collections through **SQL reporting views**.
-- I reconcile profit to cash **to the cent across 72 branch-months**.
-- I automate the **base refresh in about 10 seconds**.
-
-**Tools:** Python, SQL, Power BI
-
-[Method, definitions and refresh instructions](DETAILS.md) · [Findings and ranked actions](FINDINGS.md)
+[Business questions and answers](BUSINESS_QUESTIONS.md)

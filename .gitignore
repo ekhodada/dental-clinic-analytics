@@ -8,7 +8,7 @@ processed/*.sqlite
 .DS_Store
 
 *.egg-info/
-.venv/
 .pytest_cache/
-.ipynb_checkpoints/
 pytest-of-*/
+.ipynb_checkpoints/
+.venv/

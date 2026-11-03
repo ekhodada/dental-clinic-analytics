@@ -85,7 +85,7 @@
   },
   "Checks Passed": 34,
   "Rejected Demo Records": 6,
-  "Run Seconds": 8.585,
+  "Run Seconds": 8.024,
   "Clean File Hashes": {
     "appointments.csv": "a81e0a946967bd8b6e32fdf00f0232a887b70097ab75b3947a2ba3d7b37d783a",
     "availability.csv": "1465487f0742551e2faab87a7357f404b523c88647bee958eb9cca177af7b695",
@@ -97,5 +97,5 @@
     "recalls.csv": "4a0b3128a8fb9003ef758327644f7b06c2afef40b3ce35f3bfa285e177df1343",
     "treatments.csv": "00a4b62235eff4090e823d55a64a541efd992496b447bd12c4baa9c1fa846130"
   },
-  "Timing Scope": "Cleaning, checks, SQL database and base report extracts; excludes review, extra financial tests and publication."
+  "Timing Scope": "Cleaning, checks, SQL database and base report extracts. Excludes export retrieval, human review, additional scenario calculations, dashboard publication and delivery. Manual baseline not measured."
 }

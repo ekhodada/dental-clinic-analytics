@@ -1,9 +1,0 @@
-{
-  "root_canal_recovery_share": 0.5,
-  "collections_recovery_share": 0.25,
-  "collections_min_age_days": 60,
-  "collections_max_age_days": 180,
-  "reminder_days_before": 7,
-  "confirmation_hours_before": 48,
-  "significance_threshold": 0.001
-}

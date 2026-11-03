@@ -1,7 +1,0 @@
-﻿CareCategoryID,CareCategory,ShortName,CategorySort
-C01,Routine & Preventive Care,Routine care,1
-C02,Tooth Repair & Restoration,Restoration,2
-C03,Gum & Supporting-Tissue Care,Gum care,3
-C04,Root Canal & Pulp Care,Root canal,4
-C05,Oral Surgery & Tooth Replacement,Surgery,5
-C06,"Alignment, Jaw & Other Oral Care",Other care,6
